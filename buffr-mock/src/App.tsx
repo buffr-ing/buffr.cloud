@@ -66,15 +66,19 @@ function PricingCalc() {
   const total = useMemo(() => computeMonthlyPrice(gb), [gb]);
 
   // Dynamic examples to avoid drift from the pricing logic
+  const example500GB = useMemo(() => computeMonthlyPrice(500), []);
   const example2TB = useMemo(() => computeMonthlyPrice(2000), []);
+  const example10TB = useMemo(() => computeMonthlyPrice(10000), []);
   const example20TB = useMemo(() => computeMonthlyPrice(20000), []);
 
   // Lightweight sanity checks ("tests") in dev console
   useEffect(() => {
     const near = (a: number, b: number, eps = 0.01) => Math.abs(a - b) < eps;
+    console.assert(near(example500GB, 25), `Expected 25.00 for 500 GB, got ${example500GB.toFixed(2)}`);
     console.assert(near(example2TB, 85), `Expected ~85 for 2 TB, got ${example2TB.toFixed(2)}`);
+    console.assert(near(example10TB, 405), `Expected ~405 for 10 TB, got ${example10TB.toFixed(2)}`);
     console.assert(near(example20TB, 705), `Expected ~705 for 20 TB, got ${example20TB.toFixed(2)}`);
-  }, [example2TB, example20TB]);
+  }, [example500GB, example2TB, example10TB, example20TB]);
 
   return (
     <div className="rounded-3xl border border-gray-200 dark:border-gray-800 p-6 md:p-8 bg-white/70 dark:bg-gray-900/60 shadow-xl">
@@ -104,7 +108,7 @@ function PricingCalc() {
         <Stat label="Monthly Total" value={`$${total.toFixed(2)}`} />
       </div>
       <div className="mt-6 text-xs text-gray-500 dark:text-gray-400">
-        Examples (computed): 2 TB ≈ ${example2TB.toFixed(2)} / mo • 20 TB ≈ ${example20TB.toFixed(2)} / mo. Assumes decimal TB.
+        Examples (computed): 500 GB = ${example500GB.toFixed(2)} / mo • 2 TB ≈ ${example2TB.toFixed(2)} / mo • 10 TB ≈ ${example10TB.toFixed(2)} / mo • 20 TB ≈ ${example20TB.toFixed(2)} / mo.
       </div>
     </div>
   );
@@ -120,6 +124,7 @@ function PricingCards() {
         <p className="mt-2 text-gray-600 dark:text-gray-300">14 days • 100 GB • full features • no card</p>
         <ul className="mt-4 space-y-2 text-sm text-gray-700 dark:text-gray-300">
           <li>• Unlimited plays</li>
+          <li>• Free x264 encoding on upload</li>
           <li>• No egress fees</li>
           <li>• Modern player & captions</li>
         </ul>
@@ -134,6 +139,7 @@ function PricingCards() {
         <p className="mt-2 text-gray-600 dark:text-gray-300">Includes 500 GB • unlimited plays • no surprises</p>
         <ul className="mt-4 space-y-2 text-sm text-gray-700 dark:text-gray-300">
           <li>• 500 GB included</li>
+          <li>• Free x264 encoding on upload</li>
           <li>• Extra: $0.04/GB (to 10 TB)</li>
           <li>• Above 10 TB: $0.03/GB</li>
         </ul>
@@ -147,24 +153,12 @@ function PricingCards() {
         <p className="mt-2 text-gray-600 dark:text-gray-300">50 TB+ • SLAs • private onboarding • SSO</p>
         <ul className="mt-4 space-y-2 text-sm text-gray-700 dark:text-gray-300">
           <li>• Dedicated support</li>
+          <li>• Free x264 encoding on upload</li>
           <li>• Contracts & invoicing</li>
           <li>• Architecture reviews</li>
         </ul>
         <button className="mt-6 w-full rounded-xl bg-gray-900 text-white py-2.5 font-medium hover:bg-black transition">Talk to Sales</button>
       </div>
-    </div>
-  );
-}
-
-function TechCard({ title, lines }: { title: string; lines: string[] }) {
-  return (
-    <div className="rounded-2xl border border-gray-200 dark:border-gray-800 p-5 bg-white/70 dark:bg-gray-900/60">
-      <div className="text-sm font-semibold text-gray-900 dark:text-gray-100">{title}</div>
-      <ul className="mt-2 text-sm text-gray-600 dark:text-gray-300 space-y-1">
-        {lines.map((l, i) => (
-          <li key={i}>• {l}</li>
-        ))}
-      </ul>
     </div>
   );
 }
@@ -198,7 +192,7 @@ export default function BuffrLandingMock() {
             <p className="text-sm font-semibold tracking-widest uppercase text-teal-600">Skip the spin</p>
             <h1 className="mt-3 text-4xl md:text-6xl font-semibold leading-[1.05]">A modern video hosting & delivery platform for creators.</h1>
             <p className="mt-4 text-lg text-gray-600 dark:text-gray-300 max-w-xl">
-              Unlimited plays. No egress fees. Pay only for what you store.
+              Unlimited plays. Free x264 encoding. No egress fees. Pay only for what you store.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row gap-3">
               <button className="rounded-xl bg-teal-600 text-white px-5 py-3 font-medium hover:bg-teal-700">Start free trial</button>
@@ -253,6 +247,7 @@ export default function BuffrLandingMock() {
           <Feature title="Unlimited plays" desc="We don’t meter your audience. If you go viral, congrats — not a penalty." icon={<Icon path="M20 6L9 17l-5-5" />} />
           <Feature title="No egress fees" desc="Cloudflare CDN in front. Your delivery bill: $0." icon={<Icon path="M3 12h18M3 6h18M3 18h18" />} />
           <Feature title="Storage-only pricing" desc="Simple, transparent rates with progressive volume discounts." icon={<Icon path="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4m18-6V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v4m18 0H3" />} />
+          <Feature title="Free x264 encoding" desc="We transcode to H.264 (x264) on ingest at no extra cost." icon={<Icon path="M20 6L9 17l-5-5" />} />
           <Feature title="Modern player" desc="Video.js / Shaka / Plyr with hotkeys, captions, ABR." icon={<Icon path="M8 5v14l11-7z" />} />
           <Feature title="Realtime metrics" desc="Player → Worker events into ClickHouse/PostHog for dashboards." icon={<Icon path="M3 3v18h18M7 13v5m5-10v10m5-7v7" />} />
           <Feature title="Fair-use tokens" desc="JWT-gated manifests; segments are immutable + cached at the edge." icon={<Icon path="M12 2l3 7h7l-5.5 4 2 7L12 16l-6.5 4 2-7L2 9h7z" />} />
@@ -261,7 +256,7 @@ export default function BuffrLandingMock() {
 
       {/* Pricing */}
       <section id="pricing" className="mx-auto max-w-7xl px-4 py-14 md:py-20">
-        <SectionTitle title="Fair, transparent pricing" subtitle="Unlimited views. Pay only for what you store. Progressive volume discounts so big libraries don’t get punished." />
+        <SectionTitle title="Fair, transparent pricing" subtitle="Unlimited views. Free x264 encoding. Pay only for what you store. Progressive volume discounts so big libraries don’t get punished." />
         <div className="mt-10 grid lg:grid-cols-3 gap-8 lg:items-start">
           <div className="lg:col-span-2 space-y-8">
             <PricingCards />
@@ -290,6 +285,10 @@ export default function BuffrLandingMock() {
           <div>
             <h4 className="font-semibold">Do you charge for bandwidth or views?</h4>
             <p className="mt-2 text-gray-600 dark:text-gray-300">No. Thanks to Cloudflare, delivery egress is $0. We never bill per view or GB delivered.</p>
+          </div>
+          <div>
+            <h4 className="font-semibold">Is x264 encoding free?</h4>
+            <p className="mt-2 text-gray-600 dark:text-gray-300">Yes. We encode to H.264 (x264) at no extra cost — you only pay for storage.</p>
           </div>
           <div>
             <h4 className="font-semibold">How is storage calculated?</h4>
