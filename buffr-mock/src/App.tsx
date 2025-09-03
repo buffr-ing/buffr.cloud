@@ -121,7 +121,7 @@ function PricingCards() {
       <div className="rounded-3xl border border-gray-200 dark:border-gray-800 p-6 bg-white/70 dark:bg-gray-900/60 shadow">
         <div className="text-sm font-semibold text-teal-600">Trial</div>
         <div className="mt-2 text-3xl font-semibold text-gray-900 dark:text-gray-100">Free</div>
-        <p className="mt-2 text-gray-600 dark:text-gray-300">14 days • 100 GB • full features • no card</p>
+        <p className="mt-2 text-gray-600 dark:text-gray-300">14 days • 50 GB • full features</p>
         <ul className="mt-4 space-y-2 text-sm text-gray-700 dark:text-gray-300">
           <li>• Unlimited plays</li>
           <li>• Free x264 encoding on upload</li>
@@ -206,7 +206,7 @@ export default function BuffrLandingMock() {
               <button className="rounded-xl border border-gray-300 dark:border-gray-700 px-5 py-3 font-medium hover:bg-gray-50 dark:hover:bg-gray-900">View docs</button>
             </div>
             <div className="mt-6 flex items-center gap-6 text-xs text-gray-500 dark:text-gray-400">
-              <div className="flex items-center gap-2"><Icon path="M20 6L9 17l-5-5" /> No credit card • 14 days • 100 GB</div>
+              <div className="flex items-center gap-2"><Icon path="M20 6L9 17l-5-5" /> 14 days • 50 GB</div>
               <div className="hidden md:flex items-center gap-2"><Icon path="M20 6L9 17l-5-5" /> Creator-friendly terms</div>
             </div>
           </div>
