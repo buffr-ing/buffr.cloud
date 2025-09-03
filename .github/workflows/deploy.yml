@@ -23,10 +23,13 @@ jobs:
           node-version: 20
           cache: npm
       - run: npm ci
+        working-directory: buffr-mock
       - run: npm run build
+        working-directory: buffr-mock
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: dist
+          path: buffr-mock/dist
+  
   deploy:
     needs: build
     runs-on: ubuntu-latest
