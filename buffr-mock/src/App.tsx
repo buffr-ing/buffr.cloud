@@ -165,7 +165,11 @@ function PricingCards() {
 
 export default function BuffrLandingMock() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-slate-50 dark:from-gray-950 dark:to-gray-950 text-gray-900 dark:text-gray-50">
+    <>
+      {/* Full-bleed background to cover GH Pages white margins */}
+      <div className="fixed inset-0 -z-10 bg-gradient-to-b from-white to-slate-50 dark:from-gray-950 dark:to-gray-950" />
+      
+    <div className="relative min-h-screen bg-gradient-to-b from-white to-slate-50 dark:from-gray-950 dark:to-gray-950 text-gray-900 dark:text-gray-50">
       {/* Nav */}
       <header className="sticky top-0 z-40 backdrop-blur bg-white/70 dark:bg-gray-950/60 border-b border-gray-200/60 dark:border-gray-800">
         <div className="mx-auto max-w-7xl px-4 py-3 flex items-center justify-between">
@@ -320,5 +324,7 @@ export default function BuffrLandingMock() {
         </div>
       </footer>
     </div>
+  )
+    </>
   );
 }
