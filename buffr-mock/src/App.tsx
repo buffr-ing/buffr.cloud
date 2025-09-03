@@ -164,6 +164,9 @@ function PricingCards() {
 }
 
 export default function BuffrLandingMock() {
+  useEffect(() => {
+    document.title = "Buffr - Skip the Spin";
+  }, []);
   return (
     <>
       {/* Full-bleed background to cover GH Pages white margins */}
