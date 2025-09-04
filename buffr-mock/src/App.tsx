@@ -85,7 +85,7 @@ function PricingCalc() {
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
         <div>
           <h4 className="text-xl font-semibold text-gray-900 dark:text-gray-100">Estimate your monthly price</h4>
-          <p className="mt-1 text-sm text-gray-600 dark:text-gray-300">$25 base includes 500 GB. Then $0.04/GB to 10 TB, $0.03/GB after. We never charge for views or egress.</p>
+          <p className="mt-1 text-sm text-gray-600 dark:text-gray-300">$25 base includes 500 GB. Then $0.04/GB to 10 TB, $0.03/GB after. We never charge for views or bandwidth.</p>
         </div>
         <div className="flex items-center gap-4">
           <div className="text-sm text-gray-600 dark:text-gray-300">
@@ -116,23 +116,23 @@ function PricingCalc() {
 
 function PricingCards() {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div className="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-6">
       {/* Trial */}
-      <div className="rounded-3xl border border-gray-200 dark:border-gray-800 p-6 bg-white/70 dark:bg-gray-900/60 shadow">
+      <div className="rounded-3xl border border-gray-200 dark:border-gray-800 p-6 bg-white/70 dark:bg-gray-900/60 shadow min-w-[220px]">
         <div className="text-sm font-semibold text-teal-600">Trial</div>
         <div className="mt-2 text-3xl font-semibold text-gray-900 dark:text-gray-100">Free</div>
-        <p className="mt-2 text-gray-600 dark:text-gray-300">14 days • 50 GB • full features</p>
+        <p className="mt-2 text-gray-600 dark:text-gray-300">14 days • 100 GB • full features • no card</p>
         <ul className="mt-4 space-y-2 text-sm text-gray-700 dark:text-gray-300">
           <li>• Unlimited plays</li>
           <li>• Free x264 encoding on upload</li>
-          <li>• No egress fees</li>
+          <li>• No bandwidth fees</li>
           <li>• Modern player & captions</li>
         </ul>
         <button className="mt-6 w-full rounded-xl bg-teal-600 text-white py-2.5 font-medium hover:bg-teal-700 transition">Start Free Trial</button>
       </div>
 
       {/* Starter */}
-      <div className="relative rounded-3xl border-2 border-teal-500 p-6 bg-white dark:bg-gray-900 shadow-xl">
+      <div className="relative rounded-3xl border-2 border-teal-500 p-6 bg-white dark:bg-gray-900 shadow-xl min-w-[220px]">
         <div className="absolute -top-3 right-6 px-2.5 py-1 text-xs rounded-full bg-teal-600 text-white">Most Popular</div>
         <div className="text-sm font-semibold text-teal-600">Starter</div>
         <div className="mt-2 text-3xl font-semibold text-gray-900 dark:text-gray-100">$25<span className="text-base font-normal text-gray-500">/mo</span></div>
@@ -147,7 +147,7 @@ function PricingCards() {
       </div>
 
       {/* Enterprise */}
-      <div className="rounded-3xl border border-gray-200 dark:border-gray-800 p-6 bg-white/70 dark:bg-gray-900/60 shadow">
+      <div className="rounded-3xl border border-gray-200 dark:border-gray-800 p-6 bg-white/70 dark:bg-gray-900/60 shadow min-w-[220px]">
         <div className="text-sm font-semibold text-teal-600">Enterprise</div>
         <div className="mt-2 text-3xl font-semibold text-gray-900 dark:text-gray-100">Custom</div>
         <p className="mt-2 text-gray-600 dark:text-gray-300">50 TB+ • SLAs • private onboarding • SSO</p>
@@ -173,11 +173,11 @@ export default function BuffrLandingMock() {
       {/* Nav */}
       <header className="sticky top-0 z-40 backdrop-blur bg-white/70 dark:bg-gray-950/60 border-b border-gray-200/60 dark:border-gray-800">
         <div className="mx-auto max-w-7xl px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            {/* Logo mark: spinner resolving into a line */}
+          <div className="flex items-center gap-2 group">
+            {/* Logo mark: spinner resolving into a line (animate only on hover) */}
             <div className="relative">
-              <div className="h-6 w-6 rounded-full border-2 border-teal-500 animate-spin [animation-duration:1.6s]" />
-              <div className="absolute inset-[5px] bg-gradient-to-r from-transparent via-teal-500 to-transparent rotate-45" />
+              <div className="h-6 w-6 rounded-full border-2 border-teal-500 transition-transform group-hover:animate-spin group-hover:[animation-duration:.9s] group-hover:ring-2 group-hover:ring-teal-400/40" />
+              <div className="pointer-events-none absolute inset-[5px] bg-gradient-to-r from-transparent via-teal-500 to-transparent rotate-45" />
             </div>
             <span className="text-xl font-semibold tracking-tight">buffr</span>
           </div>
@@ -196,14 +196,14 @@ export default function BuffrLandingMock() {
             <p className="text-sm font-semibold tracking-widest uppercase text-teal-600">Skip the spin</p>
             <h1 className="mt-3 text-4xl md:text-6xl font-semibold leading-[1.05]">A modern video hosting & delivery platform for creators.</h1>
             <p className="mt-4 text-lg text-gray-600 dark:text-gray-300 max-w-xl">
-              Unlimited plays. Free x264 encoding. No egress fees. Pay only for what you store.
+              Unlimited plays. Free x264 encoding. No bandwidth fees. Pay only for what you store.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row gap-3">
               <button className="rounded-xl bg-teal-600 text-white px-5 py-3 font-medium hover:bg-teal-700">Start free trial</button>
               <button className="rounded-xl border border-gray-300 dark:border-gray-700 px-5 py-3 font-medium hover:bg-gray-50 dark:hover:bg-gray-900">View docs</button>
             </div>
             <div className="mt-6 flex items-center gap-6 text-xs text-gray-500 dark:text-gray-400">
-              <div className="flex items-center gap-2"><Icon path="M20 6L9 17l-5-5" /> 14 days • 50 GB</div>
+              <div className="flex items-center gap-2 group"><Icon path="M20 6L9 17l-5-5" /> No credit card • 14 days • 100 GB</div>
               <div className="hidden md:flex items-center gap-2"><Icon path="M20 6L9 17l-5-5" /> Creator-friendly terms</div>
             </div>
           </div>
@@ -224,7 +224,7 @@ export default function BuffrLandingMock() {
                 </div>
               </div>
               <div className="grid md:grid-cols-3 gap-0 border-t border-white/10">
-                <div className="p-4 text-xs text-white/80">Engagement events → Worker</div>
+                <div className="p-4 text-xs text-white/80">Engagement signals → Analytics</div>
                 <div className="p-4 text-xs text-white/80">Real-time charts</div>
                 <div className="p-4 text-xs text-white/80">Unlimited views</div>
               </div>
@@ -239,7 +239,7 @@ export default function BuffrLandingMock() {
           <div className="flex flex-col md:flex-row items-center justify-between gap-3 text-sm">
             <div className="flex items-center gap-2 text-gray-600 dark:text-gray-300"><span className="font-medium text-gray-900 dark:text-gray-100">Domains</span> • buffr.cloud (app, API, docs)</div>
             <div className="flex items-center gap-2 text-gray-600 dark:text-gray-300">buffr.ing (cdn.buffr.ing • media.buffr.ing)</div>
-            <div className="flex items-center gap-2 text-gray-600 dark:text-gray-300">Fair use • Token-gated manifests</div>
+            <div className="flex items-center gap-2 text-gray-600 dark:text-gray-300">Fair use • Secure streaming links</div>
           </div>
         </div>
       </section>
@@ -249,34 +249,34 @@ export default function BuffrLandingMock() {
         <SectionTitle title="Everything creators actually want" subtitle="No bandwidth bills. No view caps. Just clean, storage-first pricing with a great player and real-time analytics." />
         <div className="mt-10 grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
           <Feature title="Unlimited plays" desc="We don’t meter your audience. If you go viral, congrats — not a penalty." icon={<Icon path="M20 6L9 17l-5-5" />} />
-          <Feature title="No egress fees" desc="Cloudflare CDN in front. Your delivery bill: $0." icon={<Icon path="M3 12h18M3 6h18M3 18h18" />} />
+          <Feature title="No bandwidth fees" desc="We never charge for bandwidth — your audience can watch freely." icon={<Icon path="M3 12h18M3 6h18M3 18h18" />} />
           <Feature title="Storage-only pricing" desc="Simple, transparent rates with progressive volume discounts." icon={<Icon path="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4m18-6V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v4m18 0H3" />} />
           <Feature title="Free x264 encoding" desc="We transcode to H.264 (x264) on ingest at no extra cost." icon={<Icon path="M20 6L9 17l-5-5" />} />
           <Feature title="Modern player" desc="Video.js / Shaka / Plyr with hotkeys, captions, ABR." icon={<Icon path="M8 5v14l11-7z" />} />
-          <Feature title="Realtime metrics" desc="Player → Worker events into ClickHouse/PostHog for dashboards." icon={<Icon path="M3 3v18h18M7 13v5m5-10v10m5-7v7" />} />
-          <Feature title="Fair-use tokens" desc="JWT-gated manifests; segments are immutable + cached at the edge." icon={<Icon path="M12 2l3 7h7l-5.5 4 2 7L12 16l-6.5 4 2-7L2 9h7z" />} />
+          <Feature title="Real-time analytics" desc="Live dashboards — see watch time and engagement in real time." icon={<Icon path="M3 3v18h18M7 13v5m5-10v10m5-7v7" />} />
+          <Feature title="Secure streaming links" desc="Expiring, signed links; edge-cached playback to keep things fast and safe." icon={<Icon path="M12 2l3 7h7l-5.5 4 2 7L12 16l-6.5 4 2-7L2 9h7z" />} />
         </div>
       </section>
 
       {/* Pricing */}
       <section id="pricing" className="mx-auto max-w-7xl px-4 py-14 md:py-20">
-        <SectionTitle title="Fair, transparent pricing" subtitle="Unlimited views. Free x264 encoding. Pay only for what you store. Progressive volume discounts so big libraries don’t get punished." />
+        <SectionTitle title="Fair, transparent pricing" subtitle="Unlimited views. Free x264 encoding. Pay only for what you store. Built-in volume savings as you grow." />
         <div className="mt-10 grid lg:grid-cols-3 gap-8 lg:items-start">
           <div className="lg:col-span-2 space-y-8">
             <PricingCards />
             <PricingCalc />
           </div>
           <aside className="rounded-3xl border border-gray-200 dark:border-gray-800 p-6 bg-white/70 dark:bg-gray-900/60">
-            <h4 className="text-lg font-semibold text-gray-900 dark:text-gray-100">What makes it fair?</h4>
+            <h4 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Simple & predictable pricing</h4>
             <ul className="mt-3 space-y-2 text-sm text-gray-600 dark:text-gray-300">
-              <li>• Base fee covers ops, so we don’t squeeze storage.</li>
+              <li>• Base fee covers everything, you only pay for storage.</li>
               <li>• 500 GB included — real runway for creators.</li>
               <li>• Progressive bands avoid tier cliffs.</li>
               <li>• No bandwidth surprises — ever.</li>
             </ul>
             <div className="mt-5 rounded-2xl bg-teal-50 dark:bg-teal-900/20 p-4 text-sm">
               <div className="font-medium text-teal-700 dark:text-teal-300">Example</div>
-              <div className="mt-1 text-gray-700 dark:text-gray-200">2 TB ≈ ${computeMonthlyPrice(2000).toFixed(2)}/mo • 20 TB ≈ ${computeMonthlyPrice(20000).toFixed(2)}/mo</div>
+              <div className="mt-1 text-gray-700 dark:text-gray-200">2 TB ≈ ${computeMonthlyPrice(2000).toFixed(2)}/mo <br /> 20 TB ≈ ${computeMonthlyPrice(20000).toFixed(2)}/mo</div>
             </div>
           </aside>
         </div>
@@ -288,7 +288,7 @@ export default function BuffrLandingMock() {
         <div className="mt-8 grid md:grid-cols-2 gap-8">
           <div>
             <h4 className="font-semibold">Do you charge for bandwidth or views?</h4>
-            <p className="mt-2 text-gray-600 dark:text-gray-300">No. Thanks to Cloudflare, delivery egress is $0. We never bill per view or GB delivered.</p>
+            <p className="mt-2 text-gray-600 dark:text-gray-300">No. We never bill for views or bandwidth — your audience can watch as much as they want.</p>
           </div>
           <div>
             <h4 className="font-semibold">Is x264 encoding free?</h4>
@@ -296,7 +296,7 @@ export default function BuffrLandingMock() {
           </div>
           <div>
             <h4 className="font-semibold">How is storage calculated?</h4>
-            <p className="mt-2 text-gray-600 dark:text-gray-300">Total bytes stored in R2 across originals and renditions. Storage is metered daily and billed monthly.</p>
+            <p className="mt-2 text-gray-600 dark:text-gray-300">Total storage in your library (originals plus streaming copies). Storage is metered daily and billed monthly.</p>
           </div>
           <div>
             <h4 className="font-semibold">Can I export everything?</h4>
@@ -304,7 +304,7 @@ export default function BuffrLandingMock() {
           </div>
           <div>
             <h4 className="font-semibold">What about fair use?</h4>
-            <p className="mt-2 text-gray-600 dark:text-gray-300">JWT-gated manifests stop abuse. If you’re attacked, we’ll help lock it down without penalizing you.</p>
+            <p className="mt-2 text-gray-600 dark:text-gray-300">We use secure, expiring links to prevent abuse. If something looks off, we’ll help lock it down without penalizing you.</p>
           </div>
         </div>
       </section>
@@ -313,7 +313,7 @@ export default function BuffrLandingMock() {
       <footer className="border-t border-gray-200 dark:border-gray-800">
         <div className="mx-auto max-w-7xl px-4 py-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div className="flex items-center gap-2">
-            <div className="relative">
+            <div className="relative group">
               <div className="h-5 w-5 rounded-full border-2 border-teal-500" />
               <div className="absolute inset-[4px] bg-gradient-to-r from-transparent via-teal-500 to-transparent rotate-45" />
             </div>
