@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useMemo, useState } from "react";
 import './App.css'
 
 // Buffr Landing + Pricing Mock (Tailwind only)
@@ -10,15 +10,6 @@ function SectionTitle({ kicker, title, subtitle }: { kicker?: string; title: str
       {kicker && <p className="text-sm font-semibold tracking-wider uppercase text-teal-500">{kicker}</p>}
       <h2 className="mt-2 text-3xl md:text-4xl font-semibold tracking-tight text-gray-900 dark:text-gray-100">{title}</h2>
       {subtitle && <p className="mt-3 text-base md:text-lg text-gray-600 dark:text-gray-300">{subtitle}</p>}
-    </div>
-  );
-}
-
-function Stat({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="rounded-2xl border border-gray-200 dark:border-gray-800 p-4 md:p-6 shadow-sm bg-white/70 dark:bg-gray-900/60 backdrop-blur">
-      <div className="text-xs uppercase tracking-wider text-gray-500 dark:text-gray-400">{label}</div>
-      <div className="mt-2 text-2xl font-semibold text-gray-900 dark:text-gray-100">{value}</div>
     </div>
   );
 }
@@ -308,6 +299,14 @@ export default function BuffrLandingMock() {
           87% { transform: translateY(-0.25px) rotate(0.5deg); }
           100% { transform: translateY(0) rotate(0deg); }
         }
+        @keyframes bounce-chaos {
+          0% { transform: translateY(0) rotate(0); }
+          20% { transform: translateY(-6px) rotate(-5deg); }
+          40% { transform: translateY(3px) rotate(4deg); }
+          60% { transform: translateY(-4px) rotate(-3deg); }
+          80% { transform: translateY(2px) rotate(6deg); }
+          100% { transform: translateY(0) rotate(0); }
+        }
         @keyframes sparkle-pulse {
           0%, 100% { opacity: .25; transform: translateY(0) scale(1); }
           20% { opacity: .7; transform: translateY(-1px) scale(1.05); }
@@ -494,8 +493,36 @@ export default function BuffrLandingMock() {
         {/* Add-ons */}
         <AddOnsGrid />
 
-        {/* Bottom animated tagline (highlighted motif) */}
-        <section className="mx-auto max-w-7xl px-4 py-20">
+        {/* FAQ */}
+        <section className="mx-auto max-w-7xl px-4 py-14 md:py-20">
+          <SectionTitle title="Questions, answered" />
+          <div className="mt-8 grid md:grid-cols-2 gap-8">
+            <div>
+              <h4 className="font-semibold">Do you charge for bandwidth or views?</h4>
+              <p className="mt-2 text-gray-600 dark:text-gray-300">No. We never bill for views or bandwidth — your audience can watch as much as they want.</p>
+            </div>
+            <div>
+              <h4 className="font-semibold">Is x264 encoding free?</h4>
+              <p className="mt-2 text-gray-600 dark:text-gray-300">Yes. We encode to H.264 (x264) at no extra cost — you only pay for storage.</p>
+            </div>
+            <div>
+              <h4 className="font-semibold">How is storage calculated?</h4>
+              <p className="mt-2 text-gray-600 dark:text-gray-300">Total storage in your library (originals plus streaming copies). Storage is metered daily and billed monthly.</p>
+            </div>
+            <div>
+              <h4 className="font-semibold">Can I export everything?</h4>
+              <p className="mt-2 text-gray-600 dark:text-gray-300">Yes. It’s your content. Download originals, manifests, and segments at any time.</p>
+            </div>
+            <div>
+              <h4 className="font-semibold">What about fair use?</h4>
+              <p className="mt-2 text-gray-600 dark:text-gray-300">We use secure, expiring links to prevent abuse. If something looks off, we’ll help lock it down without penalizing you.</p>
+            </div>
+          </div>
+        </section>
+
+        {/* Bottom animated motifs */}
+        <section className="mx-auto max-w-7xl px-4 py-20 space-y-12">
+          {/* Medium motif */}
           <div className="flex justify-center">
             <div className="underline-chaos-hover inline-flex items-center gap-3 rounded-full text-lg font-semibold px-6 py-3 border-2 border-teal-600/40 text-teal-700 dark:text-teal-300 bg-teal-50/80 dark:bg-teal-900/30 chaos-pill transition relative hover:shadow-[0_0_25px_-5px_rgba(20,184,166,0.6)]">
               <span>Every day I’m</span>
@@ -503,6 +530,22 @@ export default function BuffrLandingMock() {
                 <span className="bg-clip-text text-transparent bg-gradient-to-r from-teal-600 to-emerald-500">buffr.ing</span>
                 <span className="absolute left-0 -bottom-1 block h-[3px] w-full bg-gradient-to-r from-teal-500 to-emerald-500 rounded-full underline-chaos-bar"></span>
                 <span className="absolute -right-4 -top-3 text-[14px] select-none sparkle-note">♫</span>
+              </span>
+            </div>
+          </div>
+
+          {/* XL chaotic motif */}
+          <div className="flex justify-center">
+            <div className="group inline-flex items-center gap-5 rounded-full text-2xl md:text-3xl font-bold px-10 py-6 border-4 border-teal-600/50 text-teal-700 dark:text-teal-300 bg-teal-50 dark:bg-teal-900/40 transition relative hover:shadow-[0_0_40px_-5px_rgba(20,184,166,0.7)]">
+              <span>Every day I’m</span>
+              <span className="relative">
+                <span className="bg-clip-text text-transparent bg-gradient-to-r from-teal-600 to-emerald-500">buffr.ing</span>
+                <span className="absolute left-0 -bottom-1.5 block h-[4px] w-full bg-gradient-to-r from-teal-500 to-emerald-500 rounded-full opacity-0 group-hover:opacity-100 animate-[underline-shimmer_1s_infinite]" />
+                
+                {/* Multiple notes that only animate on hover */}
+                <span className="absolute -right-6 -top-4 text-[18px] select-none opacity-0 group-hover:opacity-100 group-hover:animate-[bounce-chaos_0.9s_infinite]">♫</span>
+                <span className="absolute -left-6 -top-2 text-[16px] select-none opacity-0 group-hover:opacity-100 group-hover:animate-[bounce-chaos_1.1s_infinite_reverse]">♪</span>
+                <span className="absolute -right-10 top-2 text-[20px] select-none opacity-0 group-hover:opacity-100 group-hover:animate-[bounce-chaos_1.3s_infinite]">♬</span>
               </span>
             </div>
           </div>
