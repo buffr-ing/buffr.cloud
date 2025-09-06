@@ -8,7 +8,7 @@ import './App.css'
 // 1) Set WAITLIST_EMAIL_TO to your inbox or alias.
 // 2) On the FIRST submission, FormSubmit emails you a verification link. Click it once.
 // 3) After that, submissions go straight to your inbox.
-const WAITLIST_EMAIL_TO = "waitlist@buffr.inf";
+const WAITLIST_EMAIL_TO = "waitlist@buffr.ing";
 const FORMSUBMIT_ENDPOINT = `https://formsubmit.co/ajax/${encodeURIComponent(WAITLIST_EMAIL_TO)}`;
 
 function SectionTitle({ kicker, title, subtitle }: { kicker?: string; title: string; subtitle?: string }) {
@@ -78,7 +78,7 @@ function WaitlistModal({ open, onClose }: { open: boolean; onClose: () => void }
       const data = await res.json().catch(() => ({}));
       if (res.ok) {
         setStatus("ok");
-        setMsg("Thanks! We’ve received your request. If this is your first submission, check your inbox for a quick verification email from FormSubmit.");
+        setMsg("Thanks! We’ve received your request. If this is your first submission, check your inbox for a quick verification email.");
         setName("");
         setEmail("");
         setNotes("");
@@ -107,9 +107,10 @@ function WaitlistModal({ open, onClose }: { open: boolean; onClose: () => void }
         <div className="p-6">
           <div className="flex items-start justify-between">
             <div>
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100">Join the waitlist</h3>
+              {/* Align header and text to the left */}
+              <h3 className="text-xl font-semibold text-left text-gray-900 dark:text-gray-100">Join the waitlist</h3>
               <p className="mt-1 text-sm text-gray-600 dark:text-gray-300">
-                No account needed. We’ll email you once Private Beta opens.
+                We’ll contact you once Private Beta opens.
               </p>
             </div>
             <button
@@ -134,7 +135,7 @@ function WaitlistModal({ open, onClose }: { open: boolean; onClose: () => void }
               aria-hidden="true"
             />
             <div>
-              <label className="block text-sm font-medium text-gray-800 dark:text-gray-200">Name</label>
+              <label className="block text-sm text-left font-medium text-gray-800 dark:text-gray-200">Name</label>
               <input
                 ref={firstFieldRef}
                 type="text"
@@ -145,7 +146,7 @@ function WaitlistModal({ open, onClose }: { open: boolean; onClose: () => void }
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-800 dark:text-gray-200">Email*</label>
+              <label className="block text-sm text-left font-medium text-gray-800 dark:text-gray-200">Email*</label>
               <input
                 type="email"
                 required
@@ -156,7 +157,7 @@ function WaitlistModal({ open, onClose }: { open: boolean; onClose: () => void }
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-800 dark:text-gray-200">Notes</label>
+              <label className="block text-sm text-left font-medium text-gray-800 dark:text-gray-200">Notes</label>
               <textarea
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
@@ -633,11 +634,10 @@ export default function BuffrLandingMock() {
 
               {/* Header pill */}
               <a
-                href="#features"
+                href="#"
                 className="hidden !inline-flex md:!inline-flex items-center gap-1 rounded-full text-[11px] font-medium px-2.5 py-1 border border-teal-600/30 text-teal-700 dark:text-teal-300 bg-teal-50/60 dark:bg-teal-900/20 hover:bg-teal-50 dark:hover:bg-teal-900/30 transition group/buff chaos-pill"
                 aria-label="Every day I'm buffr.ing"
                 title="Every day I'm buffr.ing"
-                onClick={(e) => { e.preventDefault(); openWaitlist(); }}
               >
                 <span className="inline-block">Every day I’m</span>
                 <span className="inline-block font-semibold relative">
