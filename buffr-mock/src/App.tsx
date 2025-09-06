@@ -1,8 +1,15 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useRef, useEffect } from "react";
 import './App.css'
 
 // Buffr Landing + Pricing Mock (Tailwind only)
 // Skip the spin — Pay only for what you store. Unlimited plays.
+
+// === Minimal-effort waitlist via FormSubmit (client-only; no hosting needed) ===
+// 1) Set WAITLIST_EMAIL_TO to your inbox or alias.
+// 2) On the FIRST submission, FormSubmit emails you a verification link. Click it once.
+// 3) After that, submissions go straight to your inbox.
+const WAITLIST_EMAIL_TO = "waitlist@buffr.inf";
+const FORMSUBMIT_ENDPOINT = `https://formsubmit.co/ajax/${encodeURIComponent(WAITLIST_EMAIL_TO)}`;
 
 function SectionTitle({ kicker, title, subtitle }: { kicker?: string; title: string; subtitle?: string }) {
   return (
@@ -10,6 +17,183 @@ function SectionTitle({ kicker, title, subtitle }: { kicker?: string; title: str
       {kicker && <p className="text-sm font-semibold tracking-wider uppercase text-teal-500">{kicker}</p>}
       <h2 className="mt-2 text-3xl md:text-4xl font-semibold tracking-tight text-gray-900 dark:text-gray-100">{title}</h2>
       {subtitle && <p className="mt-3 text-base md:text-lg text-gray-600 dark:text-gray-300">{subtitle}</p>}
+    </div>
+  );
+}
+
+/* ---------- Reusable "Waitlist" modal (FormSubmit-based; no backend) ---------- */
+function WaitlistModal({ open, onClose }: { open: boolean; onClose: () => void }) {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [notes, setNotes] = useState("");
+  const [honeypot, setHoneypot] = useState(""); // simple bot trap
+  const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState<"idle" | "ok" | "fail">("idle");
+  const [msg, setMsg] = useState<string>("");
+
+  const firstFieldRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (open) {
+      setTimeout(() => firstFieldRef.current?.focus(), 50);
+      const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+      window.addEventListener("keydown", onKey);
+      return () => window.removeEventListener("keydown", onKey);
+    } else {
+      // reset modal when closed
+      setStatus("idle");
+      setMsg("");
+      setLoading(false);
+    }
+  }, [open, onClose]);
+
+  const submit = async (e?: React.FormEvent) => {
+    e?.preventDefault();
+    if (honeypot) return; // bot detected
+    if (!email.trim()) {
+      setMsg("Please enter your email so we can reach you.");
+      setStatus("fail");
+      return;
+    }
+    try {
+      setLoading(true);
+      setStatus("idle");
+      setMsg("");
+
+      // FormSubmit recommends sending JSON to /ajax endpoint
+      const res = await fetch(FORMSUBMIT_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Accept": "application/json" },
+        body: JSON.stringify({
+          _subject: "Buffr Waitlist Signup",
+          Name: name || "-",
+          Email: email,
+          Notes: notes || "-",
+          Source: "Announcement page",
+          _template: "table",
+          _replyto: email,
+        }),
+      });
+
+      const data = await res.json().catch(() => ({}));
+      if (res.ok) {
+        setStatus("ok");
+        setMsg("Thanks! We’ve received your request. If this is your first submission, check your inbox for a quick verification email from FormSubmit.");
+        setName("");
+        setEmail("");
+        setNotes("");
+      } else {
+        setStatus("fail");
+        setMsg(data?.message || "Something went wrong. Please try again or email us directly.");
+      }
+    } catch (err) {
+      setStatus("fail");
+      setMsg("Network error. Please try again or email us directly.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (!open) return null;
+  return (
+    <div
+      aria-modal="true"
+      role="dialog"
+      className="fixed inset-0 z-[100] grid place-items-center p-4"
+      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+    >
+      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
+      <div className="relative w-full max-w-md rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 shadow-2xl">
+        <div className="p-6">
+          <div className="flex items-start justify-between">
+            <div>
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100">Join the waitlist</h3>
+              <p className="mt-1 text-sm text-gray-600 dark:text-gray-300">
+                No account needed. We’ll email you once Private Beta opens.
+              </p>
+            </div>
+            <button
+              aria-label="Close"
+              onClick={onClose}
+              className="rounded-lg p-1.5 hover:bg-gray-100 dark:hover:bg-gray-900 text-gray-500"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M18 6 6 18M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          <form className="mt-5 space-y-4" onSubmit={submit}>
+            {/* honeypot (hidden visually) */}
+            <input
+              tabIndex={-1}
+              autoComplete="off"
+              value={honeypot}
+              onChange={(e) => setHoneypot(e.target.value)}
+              className="absolute opacity-0 pointer-events-none -z-10"
+              aria-hidden="true"
+            />
+            <div>
+              <label className="block text-sm font-medium text-gray-800 dark:text-gray-200">Name</label>
+              <input
+                ref={firstFieldRef}
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="mt-1 w-full rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2 text-sm outline-none focus:ring-2 ring-teal-500 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
+                placeholder="Name"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-800 dark:text-gray-200">Email*</label>
+              <input
+                type="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="mt-1 w-full rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2 text-sm outline-none focus:ring-2 ring-teal-500 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
+                placeholder="you@email.com"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-800 dark:text-gray-200">Notes</label>
+              <textarea
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+                rows={3}
+                className="mt-1 w-full rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2 text-sm outline-none focus:ring-2 ring-teal-500 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
+                placeholder="What are you planning to use Buffr for?"
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full rounded-xl bg-teal-600 text-white px-5 py-3 font-medium hover:bg-teal-700 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            >
+              {loading && (
+                <svg className="animate-spin" width="18" height="18" viewBox="0 0 24 24" fill="none">
+                  <circle cx="12" cy="12" r="9" stroke="currentColor" strokeOpacity=".25" strokeWidth="3" />
+                  <path d="M21 12a9 9 0 0 1-9 9" stroke="currentColor" strokeWidth="3" />
+                </svg>
+              )}
+              {loading ? "Sending..." : "Join Waitlist"}
+            </button>
+
+            {status !== "idle" && (
+              <div
+                className={`text-sm mt-2 ${status === "ok" ? "text-emerald-600 dark:text-emerald-400" : "text-rose-600 dark:text-rose-400"}`}
+              >
+                {msg}
+              </div>
+            )}
+
+            <p className="text-[11px] text-gray-500 dark:text-gray-400">
+              Sent securely via FormSubmit. We store nothing on-site.
+            </p>
+          </form>
+        </div>
+      </div>
     </div>
   );
 }
@@ -155,7 +339,7 @@ function PricingCalc() {
   );
 }
 
-function PricingCards() {
+function PricingCards({ openWaitlist }: { openWaitlist: () => void }) {
   return (
     <div className="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-6">
       {/* Trial */}
@@ -169,14 +353,21 @@ function PricingCards() {
           <li>• No bandwidth fees</li>
           <li>• Modern player & captions</li>
         </ul>
-        <button className="mt-6 w-full rounded-xl bg-teal-600 text-white py-2.5 font-medium hover:bg-teal-700 transition">Join Private Beta</button>
+        <button
+          onClick={openWaitlist}
+          className="mt-6 w-full rounded-xl bg-teal-600 text-white py-2.5 font-medium hover:bg-teal-700 transition"
+        >
+          Join Private Beta
+        </button>
       </div>
 
       {/* Starter */}
       <div className="relative rounded-3xl border-2 border-teal-500 p-6 bg-white dark:bg-gray-900 shadow-xl min-w-[220px]">
         <div className="absolute -top-3 right-6 px-2.5 py-1 text-xs rounded-full bg-teal-600 text-white">Most Popular</div>
         <div className="text-sm font-semibold text-teal-600">Starter</div>
-        <div className="mt-2 text-3xl font-semibold text-gray-900 dark:text-gray-100">$25<span className="text-base font-normal text-gray-500">/mo</span></div>
+        <div className="mt-2 text-3xl font-semibold text-gray-900 dark:text-gray-100">
+          $25<span className="text-base font-normal text-gray-500">/mo</span>
+        </div>
         <p className="mt-2 text-gray-600 dark:text-gray-300">Includes 500 GB • unlimited plays • no surprises</p>
         <ul className="mt-4 space-y-2 text-sm text-gray-700 dark:text-gray-300">
           <li>• 500 GB included</li>
@@ -184,7 +375,12 @@ function PricingCards() {
           <li>• Extra: $0.04/GB (to 10 TB)</li>
           <li>• Above 10 TB: $0.03/GB</li>
         </ul>
-        <button className="mt-6 w-full rounded-xl bg-teal-600 text-white py-2.5 font-medium hover:bg-teal-700 transition">Get Started</button>
+        <button
+          onClick={openWaitlist}
+          className="mt-6 w-full rounded-xl bg-teal-600 text-white py-2.5 font-medium hover:bg-teal-700 transition"
+        >
+          Get Started
+        </button>
         <div className="mt-3 text-xs text-gray-500 dark:text-gray-400">Add-ons available with any paid plan.</div>
 
         {/* subtle "coming soon" corner ribbon on Starter */}
@@ -206,7 +402,12 @@ function PricingCards() {
           <li>• Contracts & invoicing</li>
           <li>• Architecture reviews</li>
         </ul>
-        <button className="mt-6 w-full rounded-xl bg-gray-900 text-white py-2.5 font-medium hover:bg-black transition">Talk to Sales</button>
+        <button
+          onClick={openWaitlist}
+          className="mt-6 w-full rounded-xl bg-gray-900 text-white py-2.5 font-medium hover:bg-black transition"
+        >
+          Talk to Sales
+        </button>
       </div>
     </div>
   );
@@ -240,7 +441,7 @@ const ADD_ONS: AddOn[] = [
   // Future add-ons go here…
 ];
 
-function AddOnCard({ addOn }: { addOn: AddOn }) {
+function AddOnCard({ addOn, openWaitlist }: { addOn: AddOn; openWaitlist: () => void }) {
   return (
     <div className="rounded-3xl border border-gray-200 dark:border-gray-800 p-6 bg-white/70 dark:bg-gray-900/60 shadow min-w-[220px] flex flex-col">
       <div className="flex items-start justify-between gap-3">
@@ -267,7 +468,10 @@ function AddOnCard({ addOn }: { addOn: AddOn }) {
       </div>
 
       <div className="mt-5">
-        <button className="w-full rounded-xl border border-gray-300 dark:border-gray-700 px-4 py-2.5 text-sm font-medium hover:bg-gray-50 dark:hover:bg-gray-900">
+        <button
+          onClick={openWaitlist}
+          className="w-full rounded-xl border border-gray-300 dark:border-gray-700 px-4 py-2.5 text-sm font-medium hover:bg-gray-50 dark:hover:bg-gray-900"
+        >
           Enable add-on
         </button>
       </div>
@@ -279,7 +483,7 @@ function AddOnCard({ addOn }: { addOn: AddOn }) {
   );
 }
 
-function AddOnsGrid() {
+function AddOnsGrid({ openWaitlist }: { openWaitlist: () => void }) {
   return (
     <section id="addons" className="mx-auto max-w-7xl px-4 py-14 md:py-20">
       <SectionTitle
@@ -288,7 +492,7 @@ function AddOnsGrid() {
         subtitle="Optional capabilities you can enable per video or across your library. Billed as metered usage on your monthly invoice."
       />
       <div className="mt-10 grid grid-cols-[repeat(auto-fit,minmax(260px,1fr))] gap-6">
-        {ADD_ONS.map(a => <AddOnCard key={a.id} addOn={a} />)}
+        {ADD_ONS.map(a => <AddOnCard key={a.id} addOn={a} openWaitlist={openWaitlist} />)}
       </div>
     </section>
   );
@@ -326,9 +530,12 @@ function TrustAnnouncement() {
 /* ---------- Page ---------- */
 
 export default function BuffrLandingMock() {
+  const [waitlistOpen, setWaitlistOpen] = useState(false);
+  const openWaitlist = () => setWaitlistOpen(true);
+
   return (
     <>
-      {/* Local CSS for micro-animations (idle: note only; hover: full chaos) */}
+      {/* Local CSS for micro-animations and cursor affordance */}
       <style>{`
         @keyframes chaos-wiggle {
           0% { transform: translateY(0) rotate(0deg); }
@@ -393,22 +600,28 @@ export default function BuffrLandingMock() {
         .beta-pill {
           @apply inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-[12px] border shadow-sm;
         }
+
+        /* --- Cursor affordance (show hand cursor on hover) --- */
+        button { cursor: default; }
+        button:hover { cursor: pointer; }
+        .chaos-pill { cursor: default; }
+        .chaos-pill:hover { cursor: pointer; }
       `}</style>
 
       {/* Full-bleed background to cover GH Pages white margins */}
       <div className="fixed inset-0 -z-10 bg-gradient-to-b from-white to-slate-50 dark:from-gray-950 dark:to-gray-950" />
       
       <div className="relative min-h-screen bg-gradient-to-b from-white to-slate-50 dark:from-gray-950 dark:to-gray-950 text-gray-900 dark:text-gray-50">
-        {/* Top announcement bar (subtle coming soon) */}
-        <div className="sticky top-0 z-50">
+        {/* Top announcement bar (now NOT sticky) */}
+        <div>
           <div className="text-xs flex items-center justify-center gap-2 py-1.5 bg-teal-50/70 dark:bg-teal-900/20 text-teal-800 dark:text-teal-300 border-b border-teal-600/10">
             <span className="inline-block h-1.5 w-1.5 rounded-full bg-teal-600/80 dark:bg-teal-300 animate-[beta-dot_1.8s_ease-in-out_infinite]" />
             <span>Building in public — Private Beta soon</span>
           </div>
         </div>
 
-        {/* Nav */}
-        <header className="sticky top-[25px] z-40 backdrop-blur bg-white/70 dark:bg-gray-950/60 border-b border-gray-200/60 dark:border-gray-800">
+        {/* Nav (sticky) */}
+        <header className="sticky top-0 z-40 backdrop-blur bg-white/70 dark:bg-gray-950/60 border-b border-gray-200/60 dark:border-gray-800">
           <div className="mx-auto max-w-7xl px-4 py-3 flex items-center justify-between">
             <div className="flex items-center gap-3 group">
               {/* Logo mark */}
@@ -424,6 +637,7 @@ export default function BuffrLandingMock() {
                 className="hidden !inline-flex md:!inline-flex items-center gap-1 rounded-full text-[11px] font-medium px-2.5 py-1 border border-teal-600/30 text-teal-700 dark:text-teal-300 bg-teal-50/60 dark:bg-teal-900/20 hover:bg-teal-50 dark:hover:bg-teal-900/30 transition group/buff chaos-pill"
                 aria-label="Every day I'm buffr.ing"
                 title="Every day I'm buffr.ing"
+                onClick={(e) => { e.preventDefault(); openWaitlist(); }}
               >
                 <span className="inline-block">Every day I’m</span>
                 <span className="inline-block font-semibold relative">
@@ -462,8 +676,8 @@ export default function BuffrLandingMock() {
                 Unlimited plays. Free HD encoding. No bandwidth fees. Storage-first pricing that scales with you.
               </p>
               <div className="mt-8 flex flex-col sm:flex-row gap-3">
-                <button className="rounded-xl bg-teal-600 text-white px-5 py-3 font-medium hover:bg-teal-700">Start free trial</button>
-                <button className="rounded-xl border border-gray-300 dark:border-gray-700 px-5 py-3 font-medium hover:bg-gray-50 dark:hover:bg-gray-900">Join waitlist</button>
+                <button onClick={openWaitlist} className="rounded-xl bg-teal-600 text-white px-5 py-3 font-medium hover:bg-teal-700">Start free trial</button>
+                <button onClick={openWaitlist} className="rounded-xl border border-gray-300 dark:border-gray-700 px-5 py-3 font-medium hover:bg-gray-50 dark:hover:bg-gray-900">Join waitlist</button>
               </div>
               <div className="mt-6 flex items-center gap-6 text-xs text-gray-500 dark:text-gray-400">
                 <div className="flex items-center gap-2 group"><Icon path="M20 6L9 17l-5-5" /> No credit card • 14 days • 100 GB</div>
@@ -523,7 +737,7 @@ export default function BuffrLandingMock() {
           <SectionTitle title="Fair, transparent pricing" subtitle="Unlimited views. Free HD encoding. Pay only for what you store. Built-in volume savings as you grow." />
           <div className="mt-10 grid lg:grid-cols-3 gap-8 lg:items-start">
             <div className="lg:col-span-2 space-y-8">
-              <PricingCards />
+              <PricingCards openWaitlist={openWaitlist} />
               <PricingCalc />
             </div>
             <aside className="rounded-3xl border border-gray-200 dark:border-gray-800 p-6 bg-white/70 dark:bg-gray-900/60">
@@ -540,10 +754,24 @@ export default function BuffrLandingMock() {
               </div>
             </aside>
           </div>
+          {/* Medium motif
+          <div className="mt-10 grid flex justify-center">
+            <button
+              onClick={openWaitlist}
+              className="underline-chaos-hover inline-flex items-center gap-3 rounded-full text-lg font-semibold px-6 py-3 border-2 border-teal-600/40 text-teal-700 dark:text-teal-300 bg-teal-50/80 dark:bg-teal-900/30 chaos-pill transition relative hover:shadow-[0_0_25px_-5px_rgba(20,184,166,0.6)]"
+            >
+              <span>Every day I’m</span>
+              <span className="relative">
+                <span className="bg-clip-text text-transparent bg-gradient-to-r from-teal-600 to-emerald-500">buffr.ing</span>
+                <span className="absolute left-0 -bottom-1 block h-[3px] w-full bg-gradient-to-r from-teal-500 to-emerald-500 rounded-full underline-chaos-bar"></span>
+                <span className="absolute -right-4 -top-3 text-[14px] select-none sparkle-note">♫</span>
+              </span>
+            </button>
+          </div> */}
         </section>
 
         {/* Add-ons */}
-        <AddOnsGrid />
+        <AddOnsGrid openWaitlist={openWaitlist} />
 
         {/* FAQ */}
         <section className="mx-auto max-w-7xl px-4 py-14 md:py-20">
@@ -574,21 +802,12 @@ export default function BuffrLandingMock() {
 
         {/* Bottom animated motifs */}
         <section className="mx-auto max-w-7xl px-4 py-20 space-y-12">
-          {/* Medium motif */}
-          <div className="flex justify-center">
-            <div className="underline-chaos-hover inline-flex items-center gap-3 rounded-full text-lg font-semibold px-6 py-3 border-2 border-teal-600/40 text-teal-700 dark:text-teal-300 bg-teal-50/80 dark:bg-teal-900/30 chaos-pill transition relative hover:shadow-[0_0_25px_-5px_rgba(20,184,166,0.6)]">
-              <span>Every day I’m</span>
-              <span className="relative">
-                <span className="bg-clip-text text-transparent bg-gradient-to-r from-teal-600 to-emerald-500">buffr.ing</span>
-                <span className="absolute left-0 -bottom-1 block h-[3px] w-full bg-gradient-to-r from-teal-500 to-emerald-500 rounded-full underline-chaos-bar"></span>
-                <span className="absolute -right-4 -top-3 text-[14px] select-none sparkle-note">♫</span>
-              </span>
-            </div>
-          </div>
-
           {/* XL chaotic motif */}
           <div className="flex justify-center">
-            <div className="group inline-flex items-center gap-5 rounded-full text-2xl md:text-3xl font-bold px-10 py-6 border-4 border-teal-600/50 text-teal-700 dark:text-teal-300 bg-teal-50 dark:bg-teal-900/40 transition relative hover:shadow-[0_0_40px_-5px_rgba(20,184,166,0.7)]">
+            <button
+              onClick={openWaitlist}
+              className="group inline-flex items-center gap-5 rounded-full text-2xl md:text-3xl font-bold px-10 py-6 border-4 border-teal-600/50 text-teal-700 dark:text-teal-300 bg-teal-50 dark:bg-teal-900/40 transition relative hover:shadow-[0_0_40px_-5px_rgba(20,184,166,0.7)]"
+            >
               <span>Every day I’m</span>
               <span className="relative">
                 <span className="bg-clip-text text-transparent bg-gradient-to-r from-teal-600 to-emerald-500">buffr.ing</span>
@@ -599,7 +818,7 @@ export default function BuffrLandingMock() {
                 <span className="absolute -left-6 -top-2 text-[16px] select-none opacity-0 group-hover:opacity-100 group-hover:animate-[bounce-chaos_1.1s_infinite_reverse]">♪</span>
                 <span className="absolute -right-10 top-2 text-[20px] select-none opacity-0 group-hover:opacity-100 group-hover:animate-[bounce-chaos_1.3s_infinite]">♬</span>
               </span>
-            </div>
+            </button>
           </div>
         </section>
 
@@ -620,6 +839,9 @@ export default function BuffrLandingMock() {
           </div>
         </footer>
       </div>
+
+      {/* Waitlist Modal */}
+      <WaitlistModal open={waitlistOpen} onClose={() => setWaitlistOpen(false)} />
     </>
   );
 }
