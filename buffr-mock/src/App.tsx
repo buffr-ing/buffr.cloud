@@ -8,7 +8,7 @@ import './App.css'
 // 1) Set WAITLIST_EMAIL_TO to your inbox or alias.
 // 2) On the FIRST submission, FormSubmit emails you a verification link. Click it once.
 // 3) After that, submissions go straight to your inbox.
-const WAITLIST_EMAIL_TO = "waitlist@buffr.ing";
+const WAITLIST_EMAIL_TO = "4606298b0098bb93eec99770dc2e5e6d";
 const FORMSUBMIT_ENDPOINT = `https://formsubmit.co/ajax/${encodeURIComponent(WAITLIST_EMAIL_TO)}`;
 
 function SectionTitle({ kicker, title, subtitle }: { kicker?: string; title: string; subtitle?: string }) {
