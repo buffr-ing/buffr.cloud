@@ -78,7 +78,7 @@ function WaitlistModal({ open, onClose }: { open: boolean; onClose: () => void }
       const data = await res.json().catch(() => ({}));
       if (res.ok) {
         setStatus("ok");
-        setMsg("Thanks! We’ve received your request. If this is your first submission, check your inbox for a quick verification email.");
+        setMsg("Thanks! We’ve added you to the waitlist. We’ll be in touch.");
         setName("");
         setEmail("");
         setNotes("");
