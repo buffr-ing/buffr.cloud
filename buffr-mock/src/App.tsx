@@ -474,7 +474,7 @@ export default function BuffrLandingMock() {
               {/* Mock player + metrics panel */}
               <div className="rounded-3xl overflow-hidden border border-gray-200 dark:border-gray-800 shadow-xl bg-black relative">
                 <div className="absolute left-3 top-3 z-10">
-                  <span className="text-[10px] tracking-wide px-2 py-0.5 rounded bg-white/90 text-gray-800 dark:bg白/20 dark:text-white backdrop-blur border border-white/40">
+                  <span className="text-[10px] tracking-wide px-2 py-0.5 rounded bg-white/90 text-gray-800 dark:bg-white/20 dark:text-white backdrop-blur border border-white/40">
                     Preview
                   </span>
                 </div>
