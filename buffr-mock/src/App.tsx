@@ -1,4 +1,5 @@
 import React, { useMemo, useState, useRef, useEffect } from "react";
+import { Play, Pause, Square, SkipForward, SkipBack } from "lucide-react";
 import './App.css'
 
 // Buffr Landing + Pricing Mock (Tailwind only)
@@ -642,7 +643,7 @@ export default function BuffrLandingMock() {
                 <span className="inline-block">Every day I’m</span>
                 <span className="inline-block font-semibold relative">
                   <span className="bg-clip-text text-transparent bg-gradient-to-r from-teal-600 to-emerald-500">buffr.ing</span>
-                  <span className="absolute -right-3 -top-2 text-[10px] select-none sparkle-note">♫</span>
+                  <span className="absolute -right-3 -top-2 text-[10px] select-none sparkle-note"><Play className="w-3 h-3" /></span>
                 </span>
               </a>
             </div>
@@ -812,11 +813,25 @@ export default function BuffrLandingMock() {
               <span className="relative">
                 <span className="bg-clip-text text-transparent bg-gradient-to-r from-teal-600 to-emerald-500">buffr.ing</span>
                 <span className="absolute left-0 -bottom-1.5 block h-[4px] w-full bg-gradient-to-r from-teal-500 to-emerald-500 rounded-full opacity-0 group-hover:opacity-100 animate-[underline-shimmer_1s_infinite]" />
-                
-                {/* Multiple notes that only animate on hover */}
-                <span className="absolute -right-6 -top-4 text-[18px] select-none opacity-0 group-hover:opacity-100 group-hover:animate-[bounce-chaos_0.9s_infinite]">♫</span>
-                <span className="absolute -left-6 -top-2 text-[16px] select-none opacity-0 group-hover:opacity-100 group-hover:animate-[bounce-chaos_1.1s_infinite_reverse]">♪</span>
-                <span className="absolute -right-10 top-2 text-[20px] select-none opacity-0 group-hover:opacity-100 group-hover:animate-[bounce-chaos_1.3s_infinite]">♬</span>
+
+                {/* Video icons that animate on hover */}
+                {/* <span className="absolute -right-6 -top-4 text-[18px] select-none opacity-0 group-hover:opacity-100 group-hover:animate-[bounce-chaos_0.9s_infinite]">⏵</span>
+                <span className="absolute -left-6 -top-2 text-[16px] select-none opacity-0 group-hover:opacity-100 group-hover:animate-[bounce-chaos_1.1s_infinite_reverse]">■</span>
+                <span className="absolute -right-10 top-2 text-[20px] select-none opacity-0 group-hover:opacity-100 group-hover:animate-[bounce-chaos_1.3s_infinite]">▮▮</span>
+                <span className="absolute -left-10 bottom-2 text-[18px] select-none opacity-0 group-hover:opacity-100 group-hover:animate-[bounce-chaos_1.4s_infinite_reverse]">▷</span> */}
+
+                <span className="absolute -right-6 -top-4 opacity-0 group-hover:opacity-100 group-hover:animate-[bounce-chaos_0.9s_infinite]">
+                  <Play className="w-4 h-4" />
+                </span>
+                <span className="absolute -left-6 -top-2 opacity-0 group-hover:opacity-100 group-hover:animate-[bounce-chaos_1.1s_infinite_reverse]">
+                  <Pause className="w-4 h-4" />
+                </span>
+                <span className="absolute -right-10 top-2 opacity-0 group-hover:opacity-100 group-hover:animate-[bounce-chaos_1.3s_infinite]">
+                  <SkipForward className="w-5 h-5" />
+                </span>
+                <span className="absolute -left-10 bottom-2 opacity-0 group-hover:opacity-100 group-hover:animate-[bounce-chaos_1.4s_infinite_reverse]">
+                  <Square className="w-4 h-4" />
+                </span>
               </span>
             </button>
           </div>
