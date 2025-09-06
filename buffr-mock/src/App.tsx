@@ -16,11 +16,17 @@ function SectionTitle({ kicker, title, subtitle }: { kicker?: string; title: str
 
 function Feature({ title, desc, icon }: { title: string; desc: string; icon: React.ReactNode }) {
   return (
-    <div className="flex gap-4">
-      <div className="flex-shrink-0 mt-1">{icon}</div>
-      <div>
-        <h4 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{title}</h4>
-        <p className="mt-1 text-sm text-gray-600 dark:text-gray-300">{desc}</p>
+    <div className="rounded-2xl border border-gray-200/70 dark:border-gray-800/70 bg-white/70 dark:bg-gray-900/60 p-4 shadow-sm hover:shadow-md transition">
+      <div className="flex gap-4">
+        <div className="flex-shrink-0 mt-1">
+          <div className="h-9 w-9 grid place-items-center rounded-lg bg-teal-50/70 dark:bg-teal-900/20 ring-1 ring-teal-600/10">
+            {icon}
+          </div>
+        </div>
+        <div>
+          <h4 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{title}</h4>
+          <p className="mt-1 text-sm text-gray-600 dark:text-gray-300">{desc}</p>
+        </div>
       </div>
     </div>
   );
@@ -159,11 +165,11 @@ function PricingCards() {
         <p className="mt-2 text-gray-600 dark:text-gray-300">14 days • 100 GB • full features • no card</p>
         <ul className="mt-4 space-y-2 text-sm text-gray-700 dark:text-gray-300">
           <li>• Unlimited plays</li>
-          <li>• Free x264 encoding on upload</li>
+          <li>• Free HD encoding on upload</li>
           <li>• No bandwidth fees</li>
           <li>• Modern player & captions</li>
         </ul>
-        <button className="mt-6 w-full rounded-xl bg-teal-600 text-white py-2.5 font-medium hover:bg-teal-700 transition">Start Free Trial</button>
+        <button className="mt-6 w-full rounded-xl bg-teal-600 text-white py-2.5 font-medium hover:bg-teal-700 transition">Join Private Beta</button>
       </div>
 
       {/* Starter */}
@@ -174,12 +180,19 @@ function PricingCards() {
         <p className="mt-2 text-gray-600 dark:text-gray-300">Includes 500 GB • unlimited plays • no surprises</p>
         <ul className="mt-4 space-y-2 text-sm text-gray-700 dark:text-gray-300">
           <li>• 500 GB included</li>
-          <li>• Free x264 encoding on upload</li>
+          <li>• Free HD encoding on upload</li>
           <li>• Extra: $0.04/GB (to 10 TB)</li>
           <li>• Above 10 TB: $0.03/GB</li>
         </ul>
         <button className="mt-6 w-full rounded-xl bg-teal-600 text-white py-2.5 font-medium hover:bg-teal-700 transition">Get Started</button>
         <div className="mt-3 text-xs text-gray-500 dark:text-gray-400">Add-ons available with any paid plan.</div>
+
+        {/* subtle "coming soon" corner ribbon on Starter */}
+        <div className="pointer-events-none absolute -left-3 top-3 rotate-[-8deg]">
+          <span className="text-[10px] tracking-wide px-2 py-0.5 rounded bg-teal-50 text-teal-700 dark:bg-teal-900/30 dark:text-teal-300 border border-teal-600/30">
+            Private Beta
+          </span>
+        </div>
       </div>
 
       {/* Enterprise */}
@@ -189,7 +202,7 @@ function PricingCards() {
         <p className="mt-2 text-gray-600 dark:text-gray-300">50 TB+ • SLAs • private onboarding • SSO</p>
         <ul className="mt-4 space-y-2 text-sm text-gray-700 dark:text-gray-300">
           <li>• Dedicated support</li>
-          <li>• Free x264 encoding on upload</li>
+          <li>• Free HD encoding on upload</li>
           <li>• Contracts & invoicing</li>
           <li>• Architecture reviews</li>
         </ul>
@@ -281,6 +294,35 @@ function AddOnsGrid() {
   );
 }
 
+/* ---------- Trust / announcement ---------- */
+function TrustAnnouncement() {
+  return (
+    <section id="domains" className="mx-auto max-w-7xl px-4">
+      <div className="relative overflow-hidden rounded-2xl border border-gray-200 dark:border-gray-800 p-4 md:p-6 bg-white/70 dark:bg-gray-900/60">
+        <div className="relative flex flex-col md:flex-row items-center justify-between gap-3 text-sm">
+          {/* Private Beta */}
+          <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 bg-white/80 dark:bg-gray-900/40 border border-teal-600/30 text-teal-800 dark:text-teal-300 shadow-sm">
+            <span className="inline-block h-1.5 w-1.5 rounded-full bg-teal-600/90 dark:bg-teal-300 animate-pulse" />
+            Private Beta • invite-only
+          </span>
+
+          {/* Secure links */}
+          <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 bg-white/80 dark:bg-gray-900/40 border border-gray-300/60 dark:border-gray-700/60 shadow-sm">
+            <Icon path="M12 2l7 4v6c0 5-3.5 9-7 10-3.5-1-7-5-7-10V6l7-4z" />
+            Secure streaming links
+          </span>
+
+          {/* Fair use */}
+          <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 bg-white/80 dark:bg-gray-900/40 border border-gray-300/60 dark:border-gray-700/60 shadow-sm">
+            <Icon path="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 1 0-7.8 7.8l1 1L12 22l7.8-8.6 1-1a5.5 5.5 0 0 0 0-7.8z" />
+            Fair use • Creator-first pricing
+          </span>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 /* ---------- Page ---------- */
 
 export default function BuffrLandingMock() {
@@ -335,27 +377,51 @@ export default function BuffrLandingMock() {
         .underline-chaos-hover:hover .underline-chaos-bar {
           animation: underline-shimmer 1.2s cubic-bezier(.3,.8,.2,1) infinite;
         }
+        /* subtle beta dot */
+        @keyframes beta-dot {
+          0%, 100% { opacity: .4; transform: scale(1); }
+          50% { opacity: 1; transform: scale(1.15); }
+        }
+
+        /* Soft radial background texture for announcement card */
+        .beta-soft-bg {
+          background-image:
+            radial-gradient(1200px 600px at 20% -10%, rgba(20,184,166,.18), transparent 60%),
+            radial-gradient(1000px 500px at 120% 120%, rgba(16,185,129,.18), transparent 55%);
+        }
+
+        .beta-pill {
+          @apply inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-[12px] border shadow-sm;
+        }
       `}</style>
 
       {/* Full-bleed background to cover GH Pages white margins */}
       <div className="fixed inset-0 -z-10 bg-gradient-to-b from-white to-slate-50 dark:from-gray-950 dark:to-gray-950" />
       
       <div className="relative min-h-screen bg-gradient-to-b from-white to-slate-50 dark:from-gray-950 dark:to-gray-950 text-gray-900 dark:text-gray-50">
+        {/* Top announcement bar (subtle coming soon) */}
+        <div className="sticky top-0 z-50">
+          <div className="text-xs flex items-center justify-center gap-2 py-1.5 bg-teal-50/70 dark:bg-teal-900/20 text-teal-800 dark:text-teal-300 border-b border-teal-600/10">
+            <span className="inline-block h-1.5 w-1.5 rounded-full bg-teal-600/80 dark:bg-teal-300 animate-[beta-dot_1.8s_ease-in-out_infinite]" />
+            <span>Building in public — Private Beta soon</span>
+          </div>
+        </div>
+
         {/* Nav */}
-        <header className="sticky top-0 z-40 backdrop-blur bg-white/70 dark:bg-gray-950/60 border-b border-gray-200/60 dark:border-gray-800">
+        <header className="sticky top-[25px] z-40 backdrop-blur bg-white/70 dark:bg-gray-950/60 border-b border-gray-200/60 dark:border-gray-800">
           <div className="mx-auto max-w-7xl px-4 py-3 flex items-center justify-between">
             <div className="flex items-center gap-3 group">
-              {/* Logo mark: spinner resolving into a line (animate only on hover) */}
+              {/* Logo mark */}
               <div className="relative">
                 <div className="h-6 w-6 rounded-full border-2 border-teal-500 transition-transform group-hover:animate-spin group-hover:[animation-duration:.9s] group-hover:ring-2 group-hover:ring-teal-400/40" />
                 <div className="pointer-events-none absolute inset-[5px] bg-gradient-to-r from-transparent via-teal-500 to-transparent rotate-45" />
               </div>
               <span className="text-xl font-semibold tracking-tight">buffr</span>
 
-              {/* Header pill: idle = note dances; hover = pill wiggles + note speeds up */}
+              {/* Header pill */}
               <a
-                href="#domains"
-                className="hidden md:inline-flex items-center gap-1 rounded-full text-[11px] font-medium px-2.5 py-1 border border-teal-600/30 text-teal-700 dark:text-teal-300 bg-teal-50/60 dark:bg-teal-900/20 hover:bg-teal-50 dark:hover:bg-teal-900/30 transition group/buff chaos-pill"
+                href="#features"
+                className="hidden !inline-flex md:!inline-flex items-center gap-1 rounded-full text-[11px] font-medium px-2.5 py-1 border border-teal-600/30 text-teal-700 dark:text-teal-300 bg-teal-50/60 dark:bg-teal-900/20 hover:bg-teal-50 dark:hover:bg-teal-900/30 transition group/buff chaos-pill"
                 aria-label="Every day I'm buffr.ing"
                 title="Every day I'm buffr.ing"
               >
@@ -370,7 +436,10 @@ export default function BuffrLandingMock() {
               <a className="hover:text-gray-900 dark:hover:text-gray-100" href="#features">Features</a>
               <a className="hover:text-gray-900 dark:hover:text-gray-100" href="#pricing">Pricing</a>
               <a className="hover:text-gray-900 dark:hover:text-gray-100" href="#addons">Add-ons</a>
-              <button className="rounded-xl bg-gray-900 text-white px-4 py-2 font-medium hover:bg-black">Sign in</button>
+              <span className="inline-flex items-center gap-2 text-[11px] font-medium px-2 py-1 rounded-full bg-teal-50 text-teal-700 dark:bg-teal-900/20 dark:text-teal-300 border border-teal-600/30">
+                <span className="inline-block h-1.5 w-1.5 rounded-full bg-teal-600/80 dark:bg-teal-300 animate-[beta-dot_1.8s_ease-in-out_infinite]" />
+                Private Beta
+              </span>
             </nav>
           </div>
         </header>
@@ -390,11 +459,11 @@ export default function BuffrLandingMock() {
                 <span className="font-medium text-gray-700 dark:text-gray-200">Skip the spin</span> — pay only for what you store.
               </p>
               <p className="mt-4 text-lg text-gray-600 dark:text-gray-300 max-w-xl">
-                Unlimited plays. Free x264 encoding. No bandwidth fees. Storage-first pricing that scales with you.
+                Unlimited plays. Free HD encoding. No bandwidth fees. Storage-first pricing that scales with you.
               </p>
               <div className="mt-8 flex flex-col sm:flex-row gap-3">
                 <button className="rounded-xl bg-teal-600 text-white px-5 py-3 font-medium hover:bg-teal-700">Start free trial</button>
-                <button className="rounded-xl border border-gray-300 dark:border-gray-700 px-5 py-3 font-medium hover:bg-gray-50 dark:hover:bg-gray-900">View docs</button>
+                <button className="rounded-xl border border-gray-300 dark:border-gray-700 px-5 py-3 font-medium hover:bg-gray-50 dark:hover:bg-gray-900">Join waitlist</button>
               </div>
               <div className="mt-6 flex items-center gap-6 text-xs text-gray-500 dark:text-gray-400">
                 <div className="flex items-center gap-2 group"><Icon path="M20 6L9 17l-5-5" /> No credit card • 14 days • 100 GB</div>
@@ -403,7 +472,12 @@ export default function BuffrLandingMock() {
             </div>
             <div>
               {/* Mock player + metrics panel */}
-              <div className="rounded-3xl overflow-hidden border border-gray-200 dark:border-gray-800 shadow-xl bg-black">
+              <div className="rounded-3xl overflow-hidden border border-gray-200 dark:border-gray-800 shadow-xl bg-black relative">
+                <div className="absolute left-3 top-3 z-10">
+                  <span className="text-[10px] tracking-wide px-2 py-0.5 rounded bg-white/90 text-gray-800 dark:bg白/20 dark:text-white backdrop-blur border border-white/40">
+                    Preview
+                  </span>
+                </div>
                 <div className="aspect-video relative">
                   <div className="absolute inset-0 grid place-items-center text-white/90">
                     <div className="text-center">
@@ -413,12 +487,12 @@ export default function BuffrLandingMock() {
                         </svg>
                       </div>
                       <div className="text-sm uppercase tracking-wider text-white/70">buffr player</div>
-                      <div className="mt-1 text-lg font-medium">Hotkeys • ABR • Captions</div>
+                      <div className="mt-1 text-lg font-medium">Hotkeys • Adaptive streaming • Captions</div>
                     </div>
                   </div>
                 </div>
                 <div className="grid md:grid-cols-3 gap-0 border-t border-white/10">
-                  <div className="p-4 text-xs text-white/80">Engagement signals → Analytics</div>
+                  <div className="p-4 text-xs text-white/80">Engagement insights</div>
                   <div className="p-4 text-xs text-white/80">Real-time charts</div>
                   <div className="p-4 text-xs text-white/80">Unlimited views</div>
                 </div>
@@ -427,30 +501,8 @@ export default function BuffrLandingMock() {
           </div>
         </section>
 
-        {/* Trust / domains */}
-        <section id="domains" className="mx-auto max-w-7xl px-4">
-          <div className="rounded-2xl border border-gray-200 dark:border-gray-800 p-4 md:p-6 bg-white/60 dark:bg-gray-900/60">
-            <div className="flex flex-col md:flex-row items-center justify-between gap-3 text-sm">
-              <div className="flex items-center gap-2 text-gray-600 dark:text-gray-300"><span className="font-medium text-gray-900 dark:text-gray-100">Domains</span> • buffr.cloud (app, API, docs)</div>
-              <div className="flex items-center gap-2 text-gray-600 dark:text-gray-300">buffr.ing (cdn.buffr.ing • media.buffr.ing)</div>
-              <div className="flex items-center gap-2 text-gray-600 dark:text-gray-300">Fair use • Secure streaming links</div>
-            </div>
-
-            <div className="mt-4 grid md:grid-cols-2 gap-3 text-sm">
-              <div className="flex items-center gap-2 text-gray-600 dark:text-gray-300">
-                <span className="inline-flex items-center rounded-full px-2 py-0.5 text-[11px] bg-teal-50 text-teal-700 dark:bg-teal-900/20 dark:text-teal-300 border border-teal-600/30">
-                  CDN endpoint
-                </span>
-                <code className="px-2 py-1 rounded-md bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200">
-                  everyday-im.buffr.ing
-                </code>
-              </div>
-              <div className="flex items-center gap-2 text-gray-600 dark:text-gray-300">
-                Every day I’m <span className="font-medium text-gray-900 dark:text-gray-100">buffr.ing</span> — skip the spin.
-              </div>
-            </div>
-          </div>
-        </section>
+        {/* Trust / announcement */}
+        <TrustAnnouncement />
 
         {/* Features */}
         <section id="features" className="mx-auto max-w-7xl px-4 py-14 md:py-20">
@@ -459,16 +511,16 @@ export default function BuffrLandingMock() {
             <Feature title="Unlimited plays" desc="We don’t meter your audience. If you go viral, congrats — not a penalty." icon={<Icon path="M20 6L9 17l-5-5" />} />
             <Feature title="No bandwidth fees" desc="We never charge for bandwidth — your audience can watch freely." icon={<Icon path="M3 12h18M3 6h18M3 18h18" />} />
             <Feature title="Storage-only pricing" desc="Simple, transparent rates with progressive volume discounts." icon={<Icon path="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4m18-6V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v4m18 0H3" />} />
-            <Feature title="Free x264 encoding" desc="We transcode to H.264 (x264) on ingest at no extra cost." icon={<Icon path="M20 6L9 17l-5-5" />} />
-            <Feature title="Modern player" desc="Video.js / Shaka / Plyr with hotkeys, captions, ABR." icon={<Icon path="M8 5v14l11-7z" />} />
+            <Feature title="Free HD encoding" desc="We optimize your videos for smooth playback at no extra cost." icon={<Icon path="M20 6L9 17l-5-5" />} />
+            <Feature title="Modern player" desc="Global hotkeys, captions, and adaptive streaming out of the box." icon={<Icon path="M8 5v14l11-7z" />} />
             <Feature title="Real-time analytics" desc="Live dashboards — see watch time and engagement in real time." icon={<Icon path="M3 3v18h18M7 13v5m5-10v10m5-7v7" />} />
             <Feature title="Secure streaming links" desc="Expiring, signed links; edge-cached playback to keep things fast and safe." icon={<Icon path="M12 2l3 7h7l-5.5 4 2 7L12 16l-6.5 4 2-7L2 9h7z" />} />
-          </div>
+          </div>       
         </section>
 
         {/* Pricing */}
         <section id="pricing" className="mx-auto max-w-7xl px-4 py-14 md:py-20">
-          <SectionTitle title="Fair, transparent pricing" subtitle="Unlimited views. Free x264 encoding. Pay only for what you store. Built-in volume savings as you grow." />
+          <SectionTitle title="Fair, transparent pricing" subtitle="Unlimited views. Free HD encoding. Pay only for what you store. Built-in volume savings as you grow." />
           <div className="mt-10 grid lg:grid-cols-3 gap-8 lg:items-start">
             <div className="lg:col-span-2 space-y-8">
               <PricingCards />
@@ -502,8 +554,8 @@ export default function BuffrLandingMock() {
               <p className="mt-2 text-gray-600 dark:text-gray-300">No. We never bill for views or bandwidth — your audience can watch as much as they want.</p>
             </div>
             <div>
-              <h4 className="font-semibold">Is x264 encoding free?</h4>
-              <p className="mt-2 text-gray-600 dark:text-gray-300">Yes. We encode to H.264 (x264) at no extra cost — you only pay for storage.</p>
+              <h4 className="font-semibold">Is encoding free?</h4>
+              <p className="mt-2 text-gray-600 dark:text-gray-300">Yes. We optimize and encode your videos for smooth playback at no extra cost — you only pay for storage.</p>
             </div>
             <div>
               <h4 className="font-semibold">How is storage calculated?</h4>
@@ -551,20 +603,6 @@ export default function BuffrLandingMock() {
           </div>
         </section>
 
-        {/* Bottom animated tagline (moved here)
-        <section className="mx-auto max-w-7xl px-4 py-10">
-          <div className="flex justify-center">
-            <div className="underline-chaos-hover inline-flex items-center gap-2 rounded-full text-sm font-medium px-3 py-2 border border-teal-600/30 text-teal-700 dark:text-teal-300 bg-teal-50/60 dark:bg-teal-900/20 chaos-pill transition">
-              <span>Every day I’m</span>
-              <span className="relative font-semibold">
-                <span className="bg-clip-text text-transparent bg-gradient-to-r from-teal-600 to-emerald-500">buffr.ing</span>
-                <span className="absolute left-0 -bottom-0.5 block h-[2px] w-full bg-gradient-to-r from-teal-500 to-emerald-500 rounded-full underline-chaos-bar"></span>
-                <span className="absolute -right-3 -top-2 text-[11px] select-none sparkle-note">♫</span>
-              </span>
-            </div>
-          </div>
-        </section> */}
-
         {/* Footer */}
         <footer className="border-t border-gray-200 dark:border-gray-800">
           <div className="mx-auto max-w-7xl px-4 py-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
@@ -577,7 +615,7 @@ export default function BuffrLandingMock() {
             </div>
             <div className="text-sm text-gray-600 dark:text-gray-300">© {new Date().getFullYear()} Buffr. All rights reserved.</div>
             <div className="text-sm text-gray-600 dark:text-gray-300">
-              buffr.cloud • buffr.ing • everyday-im.buffr.ing
+              Creator-first video hosting
             </div>
           </div>
         </footer>
