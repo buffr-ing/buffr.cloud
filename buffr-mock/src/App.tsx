@@ -1,5 +1,5 @@
 import React, { useMemo, useState, useRef, useEffect } from "react";
-import { Play, Pause, Square, SkipForward, SkipBack } from "lucide-react";
+import { Play, Pause, Square, SkipForward } from "lucide-react";
 import './App.css'
 
 // Buffr Landing + Pricing Mock (Tailwind only)
