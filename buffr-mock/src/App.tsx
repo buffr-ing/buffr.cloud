@@ -227,20 +227,24 @@ function Icon({ path, size = 22 }: { path: string; size?: number }) {
 }
 
 // --- Pricing logic (single source of truth) ---
-// Decimal TB assumption (1 TB = 1000 GB)
+// Updated pricing structure with new rates
 function computeMonthlyPrice(gb: number) {
-  const base = 25; // includes 500 GB
+  const base = 30; // includes 500 GB
   const included = 500; // GB
   const tier1Ceil = 10000; // 10 TB in GB (total storage)
-  const rate1 = 0.04; // 0.5 TB → 10 TB
-  const rate2 = 0.03; // >10 TB
+  const tier2Ceil = 50000; // 50 TB in GB (total storage)
+  const rate1 = 0.05; // 0.5 TB → 10 TB
+  const rate2 = 0.04; // 10 TB → 50 TB
+  const rate3 = 0.03; // >50 TB (enterprise)
 
   const extra = Math.max(0, gb - included);
   const tier1Max = Math.max(0, tier1Ceil - included); // 9500 GB at rate1
+  const tier2Max = Math.max(0, tier2Ceil - included); // 49500 GB total
   const t1 = Math.min(extra, tier1Max);
-  const t2 = Math.max(0, extra - t1);
+  const t2 = Math.min(Math.max(0, extra - t1), tier2Max - t1);
+  const t3 = Math.max(0, extra - t1 - t2);
 
-  return base + t1 * rate1 + t2 * rate2;
+  return base + t1 * rate1 + t2 * rate2 + t3 * rate3;
 }
 
 /* ---------- Calculator (clean + presets + breakdown) ---------- */
@@ -327,12 +331,12 @@ function PricingCalc() {
           <div className="mt-3 text-sm text-gray-700 dark:text-gray-300 rounded-2xl border border-gray-200 dark:border-gray-800 p-4 bg-white/60 dark:bg-gray-900/60">
             <div className="flex items-center justify-between">
               <span>Base (includes 500 GB)</span>
-              <span>$25.00</span>
+              <span>$30.00</span>
             </div>
             <hr className="my-2 border-gray-200 dark:border-gray-800" />
             <div className="text-xs text-gray-500 dark:text-gray-400">
-              Overage is computed automatically: $0.04/GB up to 10 TB total,
-              then $0.03/GB after.
+              Overage is computed automatically: $0.05/GB for 0.5-10 TB total,
+              $0.04/GB for 10-50 TB, then $0.03/GB for 50+ TB.
             </div>
           </div>
         )}
@@ -348,10 +352,11 @@ function PricingCards({ openWaitlist }: { openWaitlist: () => void }) {
       <div className="rounded-3xl border border-gray-200 dark:border-gray-800 p-6 bg-white/70 dark:bg-gray-900/60 shadow min-w-[220px]">
         <div className="text-sm font-semibold text-teal-600">Trial</div>
         <div className="mt-2 text-3xl font-semibold text-gray-900 dark:text-gray-100">Free</div>
-        <p className="mt-2 text-gray-600 dark:text-gray-300">14 days • 100 GB • full features • no card</p>
+        <p className="mt-2 text-gray-600 dark:text-gray-300">14 days • 50 GB • full features • no card</p>
         <ul className="mt-4 space-y-2 text-sm text-gray-700 dark:text-gray-300">
           <li>• Unlimited plays</li>
           <li>• Free HD encoding on upload</li>
+          <li>• Free automatic transcripts</li>
           <li>• No bandwidth fees</li>
           <li>• Modern player & captions</li>
         </ul>
@@ -368,14 +373,15 @@ function PricingCards({ openWaitlist }: { openWaitlist: () => void }) {
         <div className="absolute -top-3 right-6 px-2.5 py-1 text-xs rounded-full bg-teal-600 text-white">Most Popular</div>
         <div className="text-sm font-semibold text-teal-600">Starter</div>
         <div className="mt-2 text-3xl font-semibold text-gray-900 dark:text-gray-100">
-          $25<span className="text-base font-normal text-gray-500">/mo</span>
+          $30<span className="text-base font-normal text-gray-500">/mo</span>
         </div>
         <p className="mt-2 text-gray-600 dark:text-gray-300">Includes 500 GB • unlimited plays • no surprises</p>
         <ul className="mt-4 space-y-2 text-sm text-gray-700 dark:text-gray-300">
           <li>• 500 GB included</li>
           <li>• Free HD encoding on upload</li>
-          <li>• Extra: $0.04/GB (to 10 TB)</li>
-          <li>• Above 10 TB: $0.03/GB</li>
+          <li>• Free automatic transcripts</li>
+          <li>• Extra: $0.05/GB (0.5-10 TB)</li>
+          <li>• Above 10 TB: $0.04/GB</li>
         </ul>
         <button
           onClick={openWaitlist}
@@ -401,6 +407,7 @@ function PricingCards({ openWaitlist }: { openWaitlist: () => void }) {
         <ul className="mt-4 space-y-2 text-sm text-gray-700 dark:text-gray-300">
           <li>• Dedicated support</li>
           <li>• Free HD encoding on upload</li>
+          <li>• Free automatic transcripts</li>
           <li>• Contracts & invoicing</li>
           <li>• Architecture reviews</li>
         </ul>
@@ -415,90 +422,6 @@ function PricingCards({ openWaitlist }: { openWaitlist: () => void }) {
   );
 }
 
-/* ---------- Add-ons ---------- */
-
-type AddOn = {
-  id: string;
-  name: string;
-  price: string;
-  unit: string;
-  tagline?: string;
-  description: string;
-  badge?: string;
-  icon?: React.ReactNode;
-};
-
-const ADD_ONS: AddOn[] = [
-  {
-    id: "transcribe",
-    name: "Transcribe video",
-    price: "$1",
-    unit: "per video",
-    tagline: "Flat fee • Fair use",
-    description:
-      "Auto-transcribe any video in your library. Usage is metered and added to your invoice at the end of the billing cycle.",
-    badge: "Metered usage",
-    icon: <Icon path="M12 20v-6m0 0l-3 3m3-3l3 3M4 4h16v10H4z" />,
-  },
-  // Future add-ons go here…
-];
-
-function AddOnCard({ addOn, openWaitlist }: { addOn: AddOn; openWaitlist: () => void }) {
-  return (
-    <div className="rounded-3xl border border-gray-200 dark:border-gray-800 p-6 bg-white/70 dark:bg-gray-900/60 shadow min-w-[220px] flex flex-col">
-      <div className="flex items-start justify-between gap-3">
-        <div className="flex items-center gap-3">
-          {addOn.icon && <div className="text-teal-600 dark:text-teal-400">{addOn.icon}</div>}
-          <div>
-            <div className="text-sm font-semibold text-teal-600">{addOn.name}</div>
-            {addOn.tagline && <div className="text-xs mt-0.5 text-gray-500 dark:text-gray-400">{addOn.tagline}</div>}
-          </div>
-        </div>
-        {addOn.badge && (
-          <span className="text-[11px] px-2 py-1 rounded-full bg-teal-50 text-teal-700 dark:bg-teal-900/20 dark:text-teal-300">
-            {addOn.badge}
-          </span>
-        )}
-      </div>
-
-      <div className="mt-3">
-        <div className="text-3xl font-semibold text-gray-900 dark:text-gray-100">
-          {addOn.price}
-          <span className="text-base font-normal text-gray-500">/{addOn.unit}</span>
-        </div>
-        <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">{addOn.description}</p>
-      </div>
-
-      <div className="mt-5">
-        <button
-          onClick={openWaitlist}
-          className="w-full rounded-xl border border-gray-300 dark:border-gray-700 px-4 py-2.5 text-sm font-medium hover:bg-gray-50 dark:hover:bg-gray-900"
-        >
-          Enable add-on
-        </button>
-      </div>
-
-      <div className="mt-3 text-xs text-gray-500 dark:text-gray-400">
-        Charges are recorded as Stripe metered usage and billed at cycle end.
-      </div>
-    </div>
-  );
-}
-
-function AddOnsGrid({ openWaitlist }: { openWaitlist: () => void }) {
-  return (
-    <section id="addons" className="mx-auto max-w-7xl px-4 py-14 md:py-20">
-      <SectionTitle
-        kicker="Add-ons"
-        title="Plug in extra power — on any paid plan"
-        subtitle="Optional capabilities you can enable per video or across your library. Billed as metered usage on your monthly invoice."
-      />
-      <div className="mt-10 grid grid-cols-[repeat(auto-fit,minmax(260px,1fr))] gap-6">
-        {ADD_ONS.map(a => <AddOnCard key={a.id} addOn={a} openWaitlist={openWaitlist} />)}
-      </div>
-    </section>
-  );
-}
 
 /* ---------- Trust / announcement ---------- */
 function TrustAnnouncement() {
@@ -650,7 +573,6 @@ export default function BuffrLandingMock() {
             <nav className="hidden md:flex items-center gap-6 text-sm text-gray-700 dark:text-gray-300">
               <a className="hover:text-gray-900 dark:hover:text-gray-100" href="#features">Features</a>
               <a className="hover:text-gray-900 dark:hover:text-gray-100" href="#pricing">Pricing</a>
-              <a className="hover:text-gray-900 dark:hover:text-gray-100" href="#addons">Add-ons</a>
               <span className="inline-flex items-center gap-2 text-[11px] font-medium px-2 py-1 rounded-full bg-teal-50 text-teal-700 dark:bg-teal-900/20 dark:text-teal-300 border border-teal-600/30">
                 <span className="inline-block h-1.5 w-1.5 rounded-full bg-teal-600/80 dark:bg-teal-300 animate-[beta-dot_1.8s_ease-in-out_infinite]" />
                 Private Beta
@@ -674,14 +596,14 @@ export default function BuffrLandingMock() {
                 <span className="font-medium text-gray-700 dark:text-gray-200">Skip the spin</span> — pay only for what you store.
               </p>
               <p className="mt-4 text-lg text-gray-600 dark:text-gray-300 max-w-xl">
-                Unlimited plays. Free HD encoding. No bandwidth fees. Storage-first pricing that scales with you.
+                Unlimited plays. Free HD encoding. Free automatic transcripts. No bandwidth fees. Storage-first pricing that scales with you.
               </p>
               <div className="mt-8 flex flex-col sm:flex-row gap-3">
                 <button onClick={openWaitlist} className="rounded-xl bg-teal-600 text-white px-5 py-3 font-medium hover:bg-teal-700">Start free trial</button>
                 <button onClick={openWaitlist} className="rounded-xl border border-gray-300 dark:border-gray-700 px-5 py-3 font-medium hover:bg-gray-50 dark:hover:bg-gray-900">Join waitlist</button>
               </div>
               <div className="mt-6 flex items-center gap-6 text-xs text-gray-500 dark:text-gray-400">
-                <div className="flex items-center gap-2 group"><Icon path="M20 6L9 17l-5-5" /> No credit card • 14 days • 100 GB</div>
+                <div className="flex items-center gap-2 group"><Icon path="M20 6L9 17l-5-5" /> No credit card • 14 days • 50 GB</div>
                 <div className="hidden md:flex items-center gap-2"><Icon path="M20 6L9 17l-5-5" /> Creator-friendly terms</div>
               </div>
             </div>
@@ -719,23 +641,59 @@ export default function BuffrLandingMock() {
         {/* Trust / announcement */}
         <TrustAnnouncement />
 
+        {/* Key differentiators highlight */}
+        <section className="mx-auto max-w-7xl px-4 py-8">
+          <div className="rounded-3xl border-2 border-teal-200 dark:border-teal-800 p-6 md:p-8 bg-gradient-to-r from-teal-50 to-emerald-50 dark:from-teal-900/20 dark:to-emerald-900/20">
+            <div className="text-center">
+              <h3 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+                What makes Buffr different?
+              </h3>
+              <div className="grid md:grid-cols-3 gap-6 mt-6">
+                <div className="flex flex-col items-center text-center">
+                  <div className="w-16 h-16 rounded-full bg-teal-100 dark:bg-teal-900/40 flex items-center justify-center mb-3">
+                    <Icon path="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" size={28} />
+                  </div>
+                  <h4 className="font-semibold text-lg text-gray-900 dark:text-gray-100">Free Transcripts</h4>
+                  <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">Every video automatically transcribed. Search, captions, and accessibility built-in at no extra cost.</p>
+                </div>
+                <div className="flex flex-col items-center text-center">
+                  <div className="w-16 h-16 rounded-full bg-teal-100 dark:bg-teal-900/40 flex items-center justify-center mb-3">
+                    <Icon path="M12 2l3 7h7l-5.5 4 2 7L12 16l-6.5 4 2-7L2 9h7z" size={28} />
+                  </div>
+                  <h4 className="font-semibold text-lg text-gray-900 dark:text-gray-100">Automatic Backups</h4>
+                  <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">Enterprise-grade encryption and automatic backups for all your content. Your videos are safe.</p>
+                </div>
+                <div className="flex flex-col items-center text-center">
+                  <div className="w-16 h-16 rounded-full bg-teal-100 dark:bg-teal-900/40 flex items-center justify-center mb-3">
+                    <Icon path="M3 3v18h18M7 13v5m5-10v10m5-7v7" size={28} />
+                  </div>
+                  <h4 className="font-semibold text-lg text-gray-900 dark:text-gray-100">Creator Analytics</h4>
+                  <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">Professional insights with watch time, retention curves, and engagement data — all included.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* Features */}
         <section id="features" className="mx-auto max-w-7xl px-4 py-14 md:py-20">
-          <SectionTitle title="Everything creators actually want" subtitle="No bandwidth bills. No view caps. Just clean, storage-first pricing with a great player and real-time analytics." />
+          <SectionTitle title="Everything creators actually want" subtitle="No bandwidth bills. No view caps. Free transcripts included. Just clean, storage-first pricing with professional-grade features." />
           <div className="mt-10 grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            <Feature title="Unlimited plays" desc="We don’t meter your audience. If you go viral, congrats — not a penalty." icon={<Icon path="M20 6L9 17l-5-5" />} />
+            <Feature title="Free automatic transcripts" desc="Every video gets transcribed automatically at no extra cost. Search, captions, and accessibility built-in." icon={<Icon path="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />} />
+            <Feature title="Unlimited plays" desc="We don't meter your audience. If you go viral, congrats — not a penalty." icon={<Icon path="M20 6L9 17l-5-5" />} />
             <Feature title="No bandwidth fees" desc="We never charge for bandwidth — your audience can watch freely." icon={<Icon path="M3 12h18M3 6h18M3 18h18" />} />
-            <Feature title="Storage-only pricing" desc="Simple, transparent rates with progressive volume discounts." icon={<Icon path="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4m18-6V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v4m18 0H3" />} />
+            <Feature title="Automatic backups" desc="Every video, transcript, and asset is automatically backed up with enterprise-grade encryption." icon={<Icon path="M12 2l3 7h7l-5.5 4 2 7L12 16l-6.5 4 2-7L2 9h7z" />} />
+            <Feature title="Storage-only pricing" desc="Simple, transparent rates with progressive volume discounts. No hidden fees." icon={<Icon path="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4m18-6V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v4m18 0H3" />} />
             <Feature title="Free HD encoding" desc="We optimize your videos for smooth playback at no extra cost." icon={<Icon path="M20 6L9 17l-5-5" />} />
             <Feature title="Modern player" desc="Global hotkeys, captions, and adaptive streaming out of the box." icon={<Icon path="M8 5v14l11-7z" />} />
-            <Feature title="Real-time analytics" desc="Live dashboards — see watch time and engagement in real time." icon={<Icon path="M3 3v18h18M7 13v5m5-10v10m5-7v7" />} />
+            <Feature title="Creator-first analytics" desc="Live dashboards with watch time, retention curves, and engagement insights — all included." icon={<Icon path="M3 3v18h18M7 13v5m5-10v10m5-7v7" />} />
             <Feature title="Secure streaming links" desc="Expiring, signed links; edge-cached playback to keep things fast and safe." icon={<Icon path="M12 2l3 7h7l-5.5 4 2 7L12 16l-6.5 4 2-7L2 9h7z" />} />
           </div>       
         </section>
 
         {/* Pricing */}
         <section id="pricing" className="mx-auto max-w-7xl px-4 py-14 md:py-20">
-          <SectionTitle title="Fair, transparent pricing" subtitle="Unlimited views. Free HD encoding. Pay only for what you store. Built-in volume savings as you grow." />
+          <SectionTitle title="Fair, transparent pricing" subtitle="Unlimited views. Free HD encoding. Free transcripts. Pay only for what you store. Built-in volume savings as you grow." />
           <div className="mt-10 grid lg:grid-cols-3 gap-8 lg:items-start">
             <div className="lg:col-span-2 space-y-8">
               <PricingCards openWaitlist={openWaitlist} />
@@ -746,6 +704,7 @@ export default function BuffrLandingMock() {
               <ul className="mt-3 space-y-2 text-sm text-gray-600 dark:text-gray-300">
                 <li>• Base fee covers everything, you only pay for storage.</li>
                 <li>• 500 GB included — real runway for creators.</li>
+                <li>• Free transcripts included in every plan.</li>
                 <li>• Progressive bands avoid tier cliffs.</li>
                 <li>• No bandwidth surprises — ever.</li>
               </ul>
@@ -771,8 +730,6 @@ export default function BuffrLandingMock() {
           </div> */}
         </section>
 
-        {/* Add-ons */}
-        <AddOnsGrid openWaitlist={openWaitlist} />
 
         {/* FAQ */}
         <section className="mx-auto max-w-7xl px-4 py-14 md:py-20">
@@ -783,6 +740,10 @@ export default function BuffrLandingMock() {
               <p className="mt-2 text-gray-600 dark:text-gray-300">No. We never bill for views or bandwidth — your audience can watch as much as they want.</p>
             </div>
             <div>
+              <h4 className="font-semibold">Are transcripts really free?</h4>
+              <p className="mt-2 text-gray-600 dark:text-gray-300">Yes. Every video gets automatically transcribed at no extra cost. Search, captions, and accessibility built-in.</p>
+            </div>
+            <div>
               <h4 className="font-semibold">Is encoding free?</h4>
               <p className="mt-2 text-gray-600 dark:text-gray-300">Yes. We optimize and encode your videos for smooth playback at no extra cost — you only pay for storage.</p>
             </div>
@@ -791,12 +752,12 @@ export default function BuffrLandingMock() {
               <p className="mt-2 text-gray-600 dark:text-gray-300">Total storage in your library (originals plus streaming copies). Storage is metered daily and billed monthly.</p>
             </div>
             <div>
-              <h4 className="font-semibold">Can I export everything?</h4>
-              <p className="mt-2 text-gray-600 dark:text-gray-300">Yes. It’s your content. Download originals, manifests, and segments at any time.</p>
+              <h4 className="font-semibold">What about backups?</h4>
+              <p className="mt-2 text-gray-600 dark:text-gray-300">Every video, transcript, and asset is automatically backed up with enterprise-grade encryption. Your content is safe.</p>
             </div>
             <div>
-              <h4 className="font-semibold">What about fair use?</h4>
-              <p className="mt-2 text-gray-600 dark:text-gray-300">We use secure, expiring links to prevent abuse. If something looks off, we’ll help lock it down without penalizing you.</p>
+              <h4 className="font-semibold">Can I export everything?</h4>
+              <p className="mt-2 text-gray-600 dark:text-gray-300">Yes. It's your content. Download originals, manifests, segments, and transcripts at any time.</p>
             </div>
           </div>
         </section>
@@ -812,13 +773,7 @@ export default function BuffrLandingMock() {
               <span>Every day I’m</span>
               <span className="relative">
                 <span className="bg-clip-text text-transparent bg-gradient-to-r from-teal-600 to-emerald-500">buffr.ing</span>
-                <span className="absolute left-0 -bottom-1.5 block h-[4px] w-full bg-gradient-to-r from-teal-500 to-emerald-500 rounded-full opacity-0 group-hover:opacity-100 animate-[underline-shimmer_1s_infinite]" />
-
-                {/* Video icons that animate on hover */}
-                {/* <span className="absolute -right-6 -top-4 text-[18px] select-none opacity-0 group-hover:opacity-100 group-hover:animate-[bounce-chaos_0.9s_infinite]">⏵</span>
-                <span className="absolute -left-6 -top-2 text-[16px] select-none opacity-0 group-hover:opacity-100 group-hover:animate-[bounce-chaos_1.1s_infinite_reverse]">■</span>
-                <span className="absolute -right-10 top-2 text-[20px] select-none opacity-0 group-hover:opacity-100 group-hover:animate-[bounce-chaos_1.3s_infinite]">▮▮</span>
-                <span className="absolute -left-10 bottom-2 text-[18px] select-none opacity-0 group-hover:opacity-100 group-hover:animate-[bounce-chaos_1.4s_infinite_reverse]">▷</span> */}
+                <span className="absolute left-0 -bottom-1.5 block h-[4px] w-full bg-gradient-to-r from-teal-500 to-emerald-500 rounded-full opacity-0 group-hover:opacity-100 animate-[underline-shimmer_1s_infinite]" />            
 
                 <span className="absolute -right-6 -top-4 opacity-0 group-hover:opacity-100 group-hover:animate-[bounce-chaos_0.9s_infinite]">
                   <Play className="w-4 h-4" />
