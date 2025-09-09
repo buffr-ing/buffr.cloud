@@ -227,24 +227,21 @@ function Icon({ path, size = 22 }: { path: string; size?: number }) {
 }
 
 // --- Pricing logic (single source of truth) ---
-// Updated pricing structure with new rates
+// Storage-only pricing ($/GB-month) with automatic volume discounts
 function computeMonthlyPrice(gb: number) {
-  const base = 30; // includes 500 GB
-  const included = 500; // GB
-  const tier1Ceil = 10000; // 10 TB in GB (total storage)
-  const tier2Ceil = 50000; // 50 TB in GB (total storage)
-  const rate1 = 0.05; // 0.5 TB → 10 TB
-  const rate2 = 0.04; // 10 TB → 50 TB
-  const rate3 = 0.03; // >50 TB (enterprise)
+  const tier0Ceil = 500;    // 0–500 GB
+  const tier1Ceil = 10000;  // 0.5–10 TB (in GB)
+  const tier2Ceil = 50000;  // 10–50 TB (in GB)
 
-  const extra = Math.max(0, gb - included);
-  const tier1Max = Math.max(0, tier1Ceil - included); // 9500 GB at rate1
-  const tier2Max = Math.max(0, tier2Ceil - included); // 49500 GB total
-  const t1 = Math.min(extra, tier1Max);
-  const t2 = Math.min(Math.max(0, extra - t1), tier2Max - t1);
-  const t3 = Math.max(0, extra - t1 - t2);
+  const rate0 = 0.06; // $ per GB of storage per month for 0–500 GB (implied from $30 → 500 GB)
+  const rate1 = 0.05; // $ per GB of storage per month for 0.5–10 TB (portion above 500 GB)
+  const rate2 = 0.04; // $ per GB of storage per month for 10–50 TB (portion above 10 TB)
 
-  return base + t1 * rate1 + t2 * rate2 + t3 * rate3;
+  const t0 = Math.min(gb, tier0Ceil);
+  const t1 = Math.min(Math.max(0, gb - tier0Ceil), tier1Ceil - tier0Ceil);
+  const t2 = Math.min(Math.max(0, gb - tier1Ceil), tier2Ceil - tier1Ceil);
+
+  return t0 * rate0 + t1 * rate1 + t2 * rate2;
 }
 
 /* ---------- Calculator (clean + presets + breakdown) ---------- */
@@ -253,6 +250,7 @@ function PricingCalc() {
   const [showBreakdown, setShowBreakdown] = useState(false);
 
   const total = useMemo(() => computeMonthlyPrice(gb), [gb]);
+  const isCustom = gb > 50000; // 50 TB+
 
   const presets = [
     { label: "500 GB", value: 500 },
@@ -260,6 +258,7 @@ function PricingCalc() {
     { label: "5 TB", value: 5000 },
     { label: "10 TB", value: 10000 },
     { label: "20 TB", value: 20000 },
+    { label: "50 TB", value: 50000 },
   ];
 
   return (
@@ -269,7 +268,7 @@ function PricingCalc() {
           Your monthly estimate
         </h4>
         <span className="text-[11px] px-2 py-1 rounded-full bg-teal-50 text-teal-700 dark:bg-teal-900/20 dark:text-teal-300">
-          Storage-based • No bandwidth fees
+          Storage-only • All features included
         </span>
       </div>
 
@@ -277,8 +276,16 @@ function PricingCalc() {
       <div className="mt-4 text-center">
         <div className="text-sm text-gray-500 dark:text-gray-400">Estimated total</div>
         <div className="mt-1 text-4xl md:text-5xl font-semibold tracking-tight text-gray-900 dark:text-gray-100">
-          ${total.toFixed(2)}
-          <span className="text-base font-normal text-gray-500">/mo</span>
+          {isCustom ? (
+            <span>Custom</span>
+          ) : (
+            <>
+              ${total.toFixed(2)}<span className="text-base font-normal text-gray-500">/mo</span>
+            </>
+          )}
+        </div>
+        <div className="mt-2 text-xs text-gray-500 dark:text-gray-400">
+          Billed on average storage for the month. Discounts apply automatically.
         </div>
       </div>
 
@@ -294,7 +301,7 @@ function PricingCalc() {
           aria-label="Storage (GB)"
           type="range"
           min={0}
-          max={30000}
+          max={100000}
           step={100}
           value={gb}
           onChange={(e) => setGb(parseInt(e.target.value))}
@@ -329,99 +336,29 @@ function PricingCalc() {
         </button>
         {showBreakdown && (
           <div className="mt-3 text-sm text-gray-700 dark:text-gray-300 rounded-2xl border border-gray-200 dark:border-gray-800 p-4 bg-white/60 dark:bg-gray-900/60">
-            <div className="flex items-center justify-between">
-              <span>Base (includes 500 GB)</span>
-              <span>$30.00</span>
+            <ul className="space-y-1 text-sm">
+              <li>• 0–500 GB: $30/month</li>
+              <li>• 0.5–10 TB: $0.05 per GB of storage per month</li>
+              <li>• 10–50 TB: $0.04 per GB of storage per month</li>
+              <li>• 50 TB+: Custom pricing</li>
+            </ul>
+            <div className="mt-2 text-xs text-gray-600 dark:text-gray-400 inline-flex items-center gap-2 leading-tight">
+              <span className="leading-tight">Billed on average storage for the month. Discounts apply automatically.</span>
+              <span
+                className="inline-flex items-center justify-center h-4 w-4 rounded-full border border-gray-400/60 text-[10px] text-gray-600 dark:text-gray-300 shrink-0 translate-y-[0.5px]"
+                title="We meter how many GB you store each day, average it over the month, and bill that. No bandwidth fees."
+                aria-label="How billing works"
+              >
+                i
+              </span>
             </div>
-            <hr className="my-2 border-gray-200 dark:border-gray-800" />
-            <div className="text-xs text-gray-500 dark:text-gray-400">
-              Overage is computed automatically: $0.05/GB for 0.5-10 TB total,
-              $0.04/GB for 10-50 TB, then $0.03/GB for 50+ TB.
-            </div>
+            <div className="mt-1 text-[11px] text-gray-500 dark:text-gray-400">Pay for what you store (averaged monthly).</div>
           </div>
         )}
       </div>
     </div>
   );
 }
-
-function PricingCards({ openWaitlist }: { openWaitlist: () => void }) {
-  return (
-    <div className="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-6">
-      {/* Trial */}
-      <div className="rounded-3xl border border-gray-200 dark:border-gray-800 p-6 bg-white/70 dark:bg-gray-900/60 shadow min-w-[220px]">
-        <div className="text-sm font-semibold text-teal-600">Trial</div>
-        <div className="mt-2 text-3xl font-semibold text-gray-900 dark:text-gray-100">Free</div>
-        <p className="mt-2 text-gray-600 dark:text-gray-300">14 days • 50 GB • full features • no card</p>
-        <ul className="mt-4 space-y-2 text-sm text-gray-700 dark:text-gray-300">
-          <li>• Unlimited plays</li>
-          <li>• Free HD encoding on upload</li>
-          <li>• Free automatic transcripts</li>
-          <li>• No bandwidth fees</li>
-          <li>• Modern player & captions</li>
-        </ul>
-        <button
-          onClick={openWaitlist}
-          className="mt-6 w-full rounded-xl bg-teal-600 text-white py-2.5 font-medium hover:bg-teal-700 transition"
-        >
-          Join Private Beta
-        </button>
-      </div>
-
-      {/* Starter */}
-      <div className="relative rounded-3xl border-2 border-teal-500 p-6 bg-white dark:bg-gray-900 shadow-xl min-w-[220px]">
-        <div className="absolute -top-3 right-6 px-2.5 py-1 text-xs rounded-full bg-teal-600 text-white">Most Popular</div>
-        <div className="text-sm font-semibold text-teal-600">Starter</div>
-        <div className="mt-2 text-3xl font-semibold text-gray-900 dark:text-gray-100">
-          $30<span className="text-base font-normal text-gray-500">/mo</span>
-        </div>
-        <p className="mt-2 text-gray-600 dark:text-gray-300">Includes 500 GB • unlimited plays • no surprises</p>
-        <ul className="mt-4 space-y-2 text-sm text-gray-700 dark:text-gray-300">
-          <li>• 500 GB included</li>
-          <li>• Free HD encoding on upload</li>
-          <li>• Free automatic transcripts</li>
-          <li>• Extra: $0.05/GB (0.5-10 TB)</li>
-          <li>• Above 10 TB: $0.04/GB</li>
-        </ul>
-        <button
-          onClick={openWaitlist}
-          className="mt-6 w-full rounded-xl bg-teal-600 text-white py-2.5 font-medium hover:bg-teal-700 transition"
-        >
-          Get Started
-        </button>
-        <div className="mt-3 text-xs text-gray-500 dark:text-gray-400">Add-ons available with any paid plan.</div>
-
-        {/* subtle "coming soon" corner ribbon on Starter */}
-        <div className="pointer-events-none absolute -left-3 top-3 rotate-[-8deg]">
-          <span className="text-[10px] tracking-wide px-2 py-0.5 rounded bg-teal-50 text-teal-700 dark:bg-teal-900/30 dark:text-teal-300 border border-teal-600/30">
-            Private Beta
-          </span>
-        </div>
-      </div>
-
-      {/* Enterprise */}
-      <div className="rounded-3xl border border-gray-200 dark:border-gray-800 p-6 bg-white/70 dark:bg-gray-900/60 shadow min-w-[220px]">
-        <div className="text-sm font-semibold text-teal-600">Enterprise</div>
-        <div className="mt-2 text-3xl font-semibold text-gray-900 dark:text-gray-100">Custom</div>
-        <p className="mt-2 text-gray-600 dark:text-gray-300">50 TB+ • SLAs • private onboarding • SSO</p>
-        <ul className="mt-4 space-y-2 text-sm text-gray-700 dark:text-gray-300">
-          <li>• Dedicated support</li>
-          <li>• Free HD encoding on upload</li>
-          <li>• Free automatic transcripts</li>
-          <li>• Contracts & invoicing</li>
-          <li>• Architecture reviews</li>
-        </ul>
-        <button
-          onClick={openWaitlist}
-          className="mt-6 w-full rounded-xl bg-gray-900 text-white py-2.5 font-medium hover:bg-black transition"
-        >
-          Talk to Sales
-        </button>
-      </div>
-    </div>
-  );
-}
-
 
 /* ---------- Trust / announcement ---------- */
 function TrustAnnouncement() {
@@ -603,8 +540,8 @@ export default function BuffrLandingMock() {
                 <button onClick={openWaitlist} className="rounded-xl border border-gray-300 dark:border-gray-700 px-5 py-3 font-medium hover:bg-gray-50 dark:hover:bg-gray-900">Join waitlist</button>
               </div>
               <div className="mt-6 flex items-center gap-6 text-xs text-gray-500 dark:text-gray-400">
-                <div className="flex items-center gap-2 group"><Icon path="M20 6L9 17l-5-5" /> No credit card • 14 days • 50 GB</div>
-                <div className="hidden md:flex items-center gap-2"><Icon path="M20 6L9 17l-5-5" /> Creator-friendly terms</div>
+                <div className="flex items-center gap-2 group"><Icon path="M20 6L9 17l-5-5" /> No credit card • 7 days • 50 GB</div>
+                <div className="hidden md:flex items-center gap-2"><Icon path="M20 6L9 17l-5-5" /> Trial transcripts: 10 min/video</div>
               </div>
             </div>
             <div>
@@ -677,7 +614,7 @@ export default function BuffrLandingMock() {
 
         {/* Features */}
         <section id="features" className="mx-auto max-w-7xl px-4 py-14 md:py-20">
-          <SectionTitle title="Everything creators actually want" subtitle="No bandwidth bills. No view caps. Free transcripts included. Just clean, storage-first pricing with professional-grade features." />
+          <SectionTitle kicker="Core features — always included" title="Everything creators actually want" subtitle="Unlimited playback, encoding, transcripts, analytics, backups, and a modern player — all included on every plan." />
           <div className="mt-10 grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
             <Feature title="Free automatic transcripts" desc="Every video gets transcribed automatically at no extra cost. Search, captions, and accessibility built-in." icon={<Icon path="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />} />
             <Feature title="Unlimited plays" desc="We don't meter your audience. If you go viral, congrats — not a penalty." icon={<Icon path="M20 6L9 17l-5-5" />} />
@@ -693,41 +630,36 @@ export default function BuffrLandingMock() {
 
         {/* Pricing */}
         <section id="pricing" className="mx-auto max-w-7xl px-4 py-14 md:py-20">
-          <SectionTitle title="Fair, transparent pricing" subtitle="Unlimited views. Free HD encoding. Free transcripts. Pay only for what you store. Built-in volume savings as you grow." />
+          <SectionTitle title="Fair, transparent pricing" subtitle="Storage-only pricing. Automatic volume discounts. Billed on average storage for the month. All core features included. Add what you need, when you need it." />
           <div className="mt-10 grid lg:grid-cols-3 gap-8 lg:items-start">
             <div className="lg:col-span-2 space-y-8">
-              <PricingCards openWaitlist={openWaitlist} />
               <PricingCalc />
+              <div className="rounded-2xl border border-teal-200 dark:border-teal-800 bg-teal-50/60 dark:bg-teal-900/20 p-4">
+                <div className="text-sm text-teal-900 dark:text-teal-200">
+                  Storage‑only pricing + optional add‑ons. No feature tiers, no upsell traps.
+                </div>
+              </div>
+              <div className="rounded-2xl border border-gray-200 dark:border-gray-800 p-4 text-sm bg-white/70 dark:bg-gray-900/60">
+                <div className="text-gray-700 dark:text-gray-300">
+                  Optional, modular add‑ons can be enabled per tenant (flat or usage‑based) — things like SSO, DRM, HEVC/AV1 ladders, live streaming, and multi‑region storage.
+                </div>
+              </div>
             </div>
             <aside className="rounded-3xl border border-gray-200 dark:border-gray-800 p-6 bg-white/70 dark:bg-gray-900/60">
               <h4 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Simple & predictable pricing</h4>
               <ul className="mt-3 space-y-2 text-sm text-gray-600 dark:text-gray-300">
-                <li>• Base fee covers everything, you only pay for storage.</li>
-                <li>• 500 GB included — real runway for creators.</li>
-                <li>• Free transcripts included in every plan.</li>
-                <li>• Progressive bands avoid tier cliffs.</li>
-                <li>• No bandwidth surprises — ever.</li>
+                <li>• Storage-only billing ($/GB of storage per month).</li>
+                <li>• Automatic volume discounts.</li>
+                <li>• Billed on average storage for the month.</li>
+                <li>• All core features included by default.</li>
+                <li>• No bandwidth or view fees — ever.</li>
               </ul>
               <div className="mt-5 rounded-2xl bg-teal-50 dark:bg-teal-900/20 p-4 text-sm">
-                <div className="font-medium text-teal-700 dark:text-teal-300">Example</div>
+                <div className="font-medium text-teal-700 dark:text-teal-300">Examples</div>
                 <div className="mt-1 text-gray-700 dark:text-gray-200">2 TB ≈ ${computeMonthlyPrice(2000).toFixed(2)}/mo <br /> 20 TB ≈ ${computeMonthlyPrice(20000).toFixed(2)}/mo</div>
               </div>
             </aside>
           </div>
-          {/* Medium motif
-          <div className="mt-10 grid flex justify-center">
-            <button
-              onClick={openWaitlist}
-              className="underline-chaos-hover inline-flex items-center gap-3 rounded-full text-lg font-semibold px-6 py-3 border-2 border-teal-600/40 text-teal-700 dark:text-teal-300 bg-teal-50/80 dark:bg-teal-900/30 chaos-pill transition relative hover:shadow-[0_0_25px_-5px_rgba(20,184,166,0.6)]"
-            >
-              <span>Every day I’m</span>
-              <span className="relative">
-                <span className="bg-clip-text text-transparent bg-gradient-to-r from-teal-600 to-emerald-500">buffr.ing</span>
-                <span className="absolute left-0 -bottom-1 block h-[3px] w-full bg-gradient-to-r from-teal-500 to-emerald-500 rounded-full underline-chaos-bar"></span>
-                <span className="absolute -right-4 -top-3 text-[14px] select-none sparkle-note">♫</span>
-              </span>
-            </button>
-          </div> */}
         </section>
 
 
@@ -757,7 +689,7 @@ export default function BuffrLandingMock() {
             </div>
             <div>
               <h4 className="font-semibold">Can I export everything?</h4>
-              <p className="mt-2 text-gray-600 dark:text-gray-300">Yes. It's your content. Download originals, manifests, segments, and transcripts at any time.</p>
+              <p className="mt-2 text-gray-600 dark:text-gray-300">Yes. It's your content. Download originals, manifests, segments, and transcripts (uploaded by you) at any time.</p>
             </div>
           </div>
         </section>
