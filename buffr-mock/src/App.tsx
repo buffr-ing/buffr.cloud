@@ -595,10 +595,10 @@ export default function BuffrLandingMock() {
                 </div>
                 <div className="flex flex-col items-center text-center">
                   <div className="w-16 h-16 rounded-full bg-teal-100 dark:bg-teal-900/40 flex items-center justify-center mb-3">
-                    <Icon path="M12 2l3 7h7l-5.5 4 2 7L12 16l-6.5 4 2-7L2 9h7z" size={28} />
+                    <Icon path="M20 6L9 17l-5-5" size={28} />
                   </div>
-                  <h4 className="font-semibold text-lg text-gray-900 dark:text-gray-100">Automatic Backups</h4>
-                  <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">Enterprise-grade encryption and automatic backups for all your content. Your videos are safe.</p>
+                  <h4 className="font-semibold text-lg text-gray-900 dark:text-gray-100">Unlimited Streaming</h4>
+                  <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">No bandwidth fees, no view limits. Your audience can watch as much as they want without penalty.</p>
                 </div>
                 <div className="flex flex-col items-center text-center">
                   <div className="w-16 h-16 rounded-full bg-teal-100 dark:bg-teal-900/40 flex items-center justify-center mb-3">
