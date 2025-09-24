@@ -1,6 +1,9 @@
 import React, { useMemo, useState, useRef, useEffect } from "react";
 import { Play, Pause, Square, SkipForward } from "lucide-react";
-import './App.css'
+import './App.css';
+import LogoShowcase from './LogoShowcase';
+import HighResLogos from './HighResLogos';
+import HighResLogosWithBg from './HighResLogosWithBg';
 
 // Buffr Landing + Pricing Mock (Tailwind only)
 // Skip the spin — Pay only for what you store. Unlimited plays.
@@ -202,10 +205,10 @@ function WaitlistModal({ open, onClose }: { open: boolean; onClose: () => void }
 
 function Feature({ title, desc, icon }: { title: string; desc: string; icon: React.ReactNode }) {
   return (
-    <div className="rounded-2xl border border-gray-200/70 dark:border-gray-800/70 bg-white/70 dark:bg-gray-900/60 p-4 shadow-sm hover:shadow-md transition">
+    <div className="rounded border border-gray-200/70 dark:border-gray-800/70 bg-white/70 dark:bg-gray-900/60 p-4 shadow-sm hover:shadow-md transition tech-border retro-glow cyber-corners">
       <div className="flex gap-4">
         <div className="flex-shrink-0 mt-1">
-          <div className="h-9 w-9 grid place-items-center rounded-lg bg-teal-50/70 dark:bg-teal-900/20 ring-1 ring-teal-600/10">
+          <div className="h-9 w-9 grid place-items-center rounded bg-teal-50/70 dark:bg-teal-900/20 ring-1 ring-teal-600/10 neon-box">
             {icon}
           </div>
         </div>
@@ -262,12 +265,12 @@ function PricingCalc() {
   ];
 
   return (
-    <div className="rounded-3xl border border-gray-200 dark:border-gray-800 p-6 md:p-8 bg-white/70 dark:bg-gray-900/60 shadow-xl">
+    <div className="rounded-lg border border-gray-200 dark:border-gray-800 p-6 md:p-8 bg-white/70 dark:bg-gray-900/60 shadow-xl tech-border retro-glow cyber-corners">
       <div className="flex items-center justify-between">
         <h4 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
           Your monthly estimate
         </h4>
-        <span className="text-[11px] px-2 py-1 rounded-full bg-teal-50 text-teal-700 dark:bg-teal-900/20 dark:text-teal-300">
+        <span className="text-[11px] px-2 py-1 rounded bg-teal-50 text-teal-700 dark:bg-teal-900/20 dark:text-teal-300">
           Storage-only • All features included
         </span>
       </div>
@@ -315,7 +318,7 @@ function PricingCalc() {
           <button
             key={p.label}
             onClick={() => setGb(p.value)}
-            className={`px-3 py-1.5 rounded-xl text-sm border transition
+            className={`px-3 py-1.5 rounded text-sm border transition
               ${gb === p.value
                 ? "border-teal-500 bg-teal-50 text-teal-700 dark:bg-teal-900/20 dark:text-teal-300"
                 : "border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-900"
@@ -335,7 +338,7 @@ function PricingCalc() {
           {showBreakdown ? "Hide breakdown" : "Show breakdown"}
         </button>
         {showBreakdown && (
-          <div className="mt-3 text-sm text-gray-700 dark:text-gray-300 rounded-2xl border border-gray-200 dark:border-gray-800 p-4 bg-white/60 dark:bg-gray-900/60">
+          <div className="mt-3 text-sm text-gray-700 dark:text-gray-300 rounded border border-gray-200 dark:border-gray-800 p-4 bg-white/60 dark:bg-gray-900/60">
             <ul className="space-y-1 text-sm">
               <li>• 0–500 GB: $30/month</li>
               <li>• 0.5–10 TB: $0.05 per GB of storage per month</li>
@@ -364,7 +367,7 @@ function PricingCalc() {
 function TrustAnnouncement() {
   return (
     <section id="domains" className="mx-auto max-w-7xl px-4">
-      <div className="relative overflow-hidden rounded-2xl border border-gray-200 dark:border-gray-800 p-4 md:p-6 bg-white/70 dark:bg-gray-900/60">
+      <div className="relative overflow-hidden rounded border border-gray-200 dark:border-gray-800 p-4 md:p-6 bg-white/70 dark:bg-gray-900/60 tech-border retro-glow cyber-corners">
         <div className="relative flex flex-col md:flex-row items-center justify-between gap-3 text-sm">
           {/* Private Beta */}
           <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 bg-white/80 dark:bg-gray-900/40 border border-teal-600/30 text-teal-800 dark:text-teal-300 shadow-sm">
@@ -391,7 +394,7 @@ function TrustAnnouncement() {
 
 /* ---------- Page ---------- */
 
-export default function BuffrLandingMock() {
+function BuffrLandingMock() {
   const [waitlistOpen, setWaitlistOpen] = useState(false);
   const openWaitlist = () => setWaitlistOpen(true);
 
@@ -464,6 +467,184 @@ export default function BuffrLandingMock() {
         }
 
 
+        /* --- Bold 80's Tech Styling --- */
+        .tech-border {
+          position: relative;
+        }
+        .tech-border::before {
+          content: '';
+          position: absolute;
+          inset: -2px;
+          background: linear-gradient(45deg, 
+            transparent 20%, 
+            rgba(20,184,166,0.6) 30%, 
+            rgba(20,184,166,0.8) 50%, 
+            rgba(20,184,166,0.6) 70%, 
+            transparent 80%);
+          border-radius: inherit;
+          z-index: -1;
+          opacity: 0;
+          transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .tech-border:hover::before {
+          opacity: 1;
+          inset: -3px;
+        }
+        
+        .retro-glow {
+          box-shadow: 
+            0 0 20px rgba(20,184,166,0.08),
+            inset 0 1px 0 rgba(255,255,255,0.1),
+            inset 0 -1px 0 rgba(20,184,166,0.05);
+        }
+        
+        .tech-grid {
+          background-image: 
+            linear-gradient(rgba(20,184,166,0.06) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(20,184,166,0.06) 1px, transparent 1px),
+            radial-gradient(circle at 50% 50%, rgba(20,184,166,0.02) 2px, transparent 2px);
+          background-size: 24px 24px, 24px 24px, 48px 48px;
+        }
+        
+        .neon-accent {
+          position: relative;
+        }
+        .neon-accent::after {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          height: 2px;
+          background: linear-gradient(90deg, 
+            transparent, 
+            rgba(20,184,166,0.4) 20%, 
+            rgba(20,184,166,0.8) 50%, 
+            rgba(20,184,166,0.4) 80%, 
+            transparent);
+          opacity: 0;
+          transition: opacity 0.4s ease;
+        }
+        .neon-accent:hover::after {
+          opacity: 1;
+          animation: neon-pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes neon-pulse {
+          0%, 100% { opacity: 0.8; }
+          50% { opacity: 1; }
+        }
+        
+        .cyber-corners {
+          position: relative;
+        }
+        .cyber-corners::before,
+        .cyber-corners::after {
+          content: '';
+          position: absolute;
+          width: 20px;
+          height: 20px;
+          border: 2px solid rgba(20,184,166,0.5);
+          transition: all 0.3s ease;
+        }
+        .cyber-corners::before {
+          top: -2px;
+          left: -2px;
+          border-right: none;
+          border-bottom: none;
+        }
+        .cyber-corners::after {
+          bottom: -2px;
+          right: -2px;
+          border-left: none;
+          border-top: none;
+        }
+        .cyber-corners:hover::before,
+        .cyber-corners:hover::after {
+          border-color: rgba(20,184,166,0.9);
+          width: 24px;
+          height: 24px;
+        }
+        
+        .retro-slash {
+          position: relative;
+        }
+        .retro-slash::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          right: 0;
+          width: 30px;
+          height: 30px;
+          background: linear-gradient(135deg, rgba(20,184,166,0.2) 0%, transparent 50%);
+          clip-path: polygon(100% 0%, 0% 100%, 100% 100%);
+          transition: all 0.3s ease;
+        }
+        .retro-slash:hover::before {
+          background: linear-gradient(135deg, rgba(20,184,166,0.4) 0%, transparent 50%);
+          width: 40px;
+          height: 40px;
+        }
+        
+        .tech-stripes {
+          background-image: repeating-linear-gradient(
+            45deg,
+            transparent,
+            transparent 2px,
+            rgba(20,184,166,0.05) 2px,
+            rgba(20,184,166,0.05) 4px
+          );
+        }
+        
+        .neon-box {
+          position: relative;
+          background: linear-gradient(135deg, rgba(20,184,166,0.1) 0%, rgba(20,184,166,0.05) 100%);
+        }
+        .neon-box::before {
+          content: '';
+          position: absolute;
+          top: -1px;
+          left: -1px;
+          right: -1px;
+          bottom: -1px;
+          background: linear-gradient(45deg, 
+            rgba(20,184,166,0.3) 0%, 
+            transparent 25%, 
+            transparent 75%, 
+            rgba(20,184,166,0.3) 100%);
+          z-index: -1;
+          border-radius: inherit;
+          opacity: 0;
+          transition: opacity 0.4s ease;
+        }
+        .neon-box:hover::before {
+          opacity: 1;
+          animation: neon-rotate 3s linear infinite;
+        }
+        
+        @keyframes neon-rotate {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+        
+
+        /* --- Responsive zoom for high-res screens --- */
+        @media (min-width: 2560px) {
+          html {
+            zoom: 1.1;
+          }
+        }
+        @media (min-width: 3440px) {
+          html {
+            zoom: 1.2;
+          }
+        }
+        @media (min-width: 3840px) {
+          html {
+            zoom: 1.3;
+          }
+        }
+
         /* --- Cursor affordance (show hand cursor on hover) --- */
         button { cursor: default; }
         button:hover { cursor: pointer; }
@@ -489,7 +670,7 @@ export default function BuffrLandingMock() {
             <div className="flex items-center gap-3 group">
               {/* Logo mark */}
               <div className="relative">
-                <div className="h-6 w-6 rounded-full border-2 border-teal-500 transition-transform group-hover:animate-spin group-hover:[animation-duration:.9s] group-hover:ring-2 group-hover:ring-teal-400/40" />
+                <div className="h-6 w-6 rounded-full border-2 border-teal-500 retro-glow" />
                 <div className="pointer-events-none absolute inset-[5px] bg-gradient-to-r from-transparent via-teal-500 to-transparent rotate-45" />
               </div>
               <span className="text-xl font-black tracking-wide" style={{ fontFamily: 'Orbitron, -apple-system, BlinkMacSystemFont, sans-serif', fontWeight: 900 }}>buffr</span>
@@ -497,13 +678,16 @@ export default function BuffrLandingMock() {
               {/* Header pill */}
               <a
                 href="#"
-                className="hidden !inline-flex md:!inline-flex items-center gap-1 rounded-full text-[11px] font-medium px-2.5 py-1 border border-teal-600/30 text-teal-700 dark:text-teal-300 bg-teal-50/60 dark:bg-teal-900/20 hover:bg-teal-50 dark:hover:bg-teal-900/30 transition group/buff chaos-pill"
+                className="hidden !inline-flex md:!inline-flex items-center gap-1 rounded text-[11px] font-medium px-2.5 py-1 border border-teal-600/30 text-teal-700 dark:text-teal-300 bg-teal-50/60 dark:bg-teal-900/20 hover:bg-teal-50 dark:hover:bg-teal-900/30 transition group/buff chaos-pill"
                 aria-label="Every day I'm buffr.ing"
                 title="Every day I'm buffr.ing"
               >
-                <span className="inline-block">Every day I’m</span>
+                <span className="inline-block">Every day I'm</span>
                 <span className="inline-block font-semibold relative">
-                  <span className="bg-clip-text text-transparent bg-gradient-to-r from-teal-600 to-emerald-500">buffr.ing</span>
+                  <span className="bg-clip-text text-transparent bg-gradient-to-r from-teal-600 to-emerald-500 relative">
+                    buffr.ing
+                    <span className="absolute bottom-0 left-0 w-full h-[1px] bg-gradient-to-r from-teal-600 to-emerald-500"></span>
+                  </span>
                   <span className="absolute -right-3 -top-2 text-[10px] select-none sparkle-note"><Play className="w-3 h-3" /></span>
                 </span>
               </a>
@@ -511,7 +695,7 @@ export default function BuffrLandingMock() {
             <nav className="hidden md:flex items-center gap-6 text-sm text-gray-700 dark:text-gray-300">
               <a className="hover:text-gray-900 dark:hover:text-gray-100" href="#features">Features</a>
               <a className="hover:text-gray-900 dark:hover:text-gray-100" href="#pricing">Pricing</a>
-              <span className="inline-flex items-center gap-2 text-[11px] font-medium px-2 py-1 rounded-full bg-teal-50 text-teal-700 dark:bg-teal-900/20 dark:text-teal-300 border border-teal-600/30">
+              <span className="inline-flex items-center gap-2 text-[11px] font-medium px-2 py-1 rounded bg-teal-50 text-teal-700 dark:bg-teal-900/20 dark:text-teal-300 border border-teal-600/30">
                 <span className="inline-block h-1.5 w-1.5 rounded-full bg-teal-600/80 dark:bg-teal-300 animate-[beta-dot_1.8s_ease-in-out_infinite]" />
                 Private Beta
               </span>
@@ -520,7 +704,7 @@ export default function BuffrLandingMock() {
         </header>
 
         {/* Hero */}
-        <section className="mx-auto max-w-7xl px-4 py-16 md:py-24">
+        <section className="mx-auto max-w-7xl px-4 py-16 md:py-24 tech-grid">
           <div className="grid md:grid-cols-2 gap-10 items-center">
             <div>
               {/* Static tagline (no animation at top) */}
@@ -537,8 +721,8 @@ export default function BuffrLandingMock() {
                 Unlimited plays. Free HD encoding. Free automatic transcripts. No bandwidth fees. Storage-first pricing that scales with you.
               </p>
               <div className="mt-8 flex flex-col sm:flex-row gap-3">
-                <button onClick={openWaitlist} className="rounded-xl bg-teal-600 text-white px-5 py-3 font-medium hover:bg-teal-700">Start free trial</button>
-                <button onClick={openWaitlist} className="rounded-xl border border-gray-300 dark:border-gray-700 px-5 py-3 font-medium hover:bg-gray-50 dark:hover:bg-gray-900">Join waitlist</button>
+                <button onClick={openWaitlist} className="rounded bg-teal-600 text-white px-5 py-3 font-medium hover:bg-teal-700 tech-border retro-glow cyber-corners neon-box">Start free trial</button>
+                <button onClick={openWaitlist} className="rounded border border-gray-300 dark:border-gray-700 px-5 py-3 font-medium hover:bg-gray-50 dark:hover:bg-gray-900 tech-border cyber-corners">Join waitlist</button>
               </div>
               <div className="mt-6 flex items-center gap-6 text-xs text-gray-500 dark:text-gray-400">
                 <div className="flex items-center gap-2 group"><Icon path="M20 6L9 17l-5-5" /> No credit card • 7 days • 50 GB</div>
@@ -547,29 +731,29 @@ export default function BuffrLandingMock() {
             </div>
             <div>
               {/* Mock player + metrics panel */}
-              <div className="rounded-3xl overflow-hidden border border-gray-200 dark:border-gray-800 shadow-xl bg-black relative">
+              <div className="rounded-lg overflow-hidden border border-gray-200 dark:border-gray-800 shadow-xl relative tech-border retro-glow cyber-corners neon-box" style={{ background: 'linear-gradient(135deg, #0a0a0a 0%, #111111 50%, #0a0a0a 100%)' }}>
                 <div className="absolute left-3 top-3 z-10">
                   <span className="text-[10px] tracking-wide px-2 py-0.5 rounded bg-white/90 text-gray-800 dark:bg-white/20 dark:text-white backdrop-blur border border-white/40">
                     Preview
                   </span>
                 </div>
                 <div className="aspect-video relative">
-                  <div className="absolute inset-0 grid place-items-center text-white/90">
+                  <div className="absolute inset-0 grid place-items-center text-white">
                     <div className="text-center">
-                      <div className="mx-auto mb-4 h-16 w-16 rounded-full border-2 border-white/40 grid place-items-center">
-                        <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" className="ml-1">
+                      <div className="mx-auto mb-4 h-16 w-16 rounded-full border-2 border-teal-400/60 grid place-items-center bg-teal-500/10 backdrop-blur-sm">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" className="ml-1 text-teal-300">
                           <path d="M8 5v14l11-7z" />
                         </svg>
                       </div>
-                      <div className="text-sm uppercase tracking-wider text-white/70">buffr player</div>
-                      <div className="mt-1 text-lg font-medium">Hotkeys • Adaptive streaming • Captions</div>
+                      <div className="text-sm uppercase tracking-wider text-teal-300/90 font-medium">buffr player</div>
+                      <div className="mt-1 text-lg font-medium text-white/95">Hotkeys • Adaptive streaming • Captions</div>
                     </div>
                   </div>
                 </div>
-                <div className="grid md:grid-cols-3 gap-0 border-t border-white/10">
-                  <div className="p-4 text-xs text-white/80">Engagement insights</div>
-                  <div className="p-4 text-xs text-white/80">Real-time charts</div>
-                  <div className="p-4 text-xs text-white/80">Unlimited views</div>
+                <div className="grid md:grid-cols-3 gap-0 border-t border-teal-500/20">
+                  <div className="p-4 text-xs text-white/90 font-medium">Engagement insights</div>
+                  <div className="p-4 text-xs text-white/90 font-medium">Real-time charts</div>
+                  <div className="p-4 text-xs text-white/90 font-medium">Unlimited views</div>
                 </div>
               </div>
             </div>
@@ -581,7 +765,7 @@ export default function BuffrLandingMock() {
 
         {/* Key differentiators highlight */}
         <section className="mx-auto max-w-7xl px-4 py-8">
-          <div className="rounded-3xl border-2 border-teal-200 dark:border-teal-800 p-6 md:p-8 bg-gradient-to-r from-teal-50 to-emerald-50 dark:from-teal-900/20 dark:to-emerald-900/20">
+          <div className="rounded-lg border-2 border-teal-200 dark:border-teal-800 p-6 md:p-8 bg-gradient-to-r from-teal-50 to-emerald-50 dark:from-teal-900/20 dark:to-emerald-900/20 tech-border retro-glow cyber-corners">
             <div className="text-center">
               <h3 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">
                 What makes Buffr different?
@@ -635,18 +819,18 @@ export default function BuffrLandingMock() {
           <div className="mt-10 grid lg:grid-cols-3 gap-8 lg:items-start">
             <div className="lg:col-span-2 space-y-8">
               <PricingCalc />
-              <div className="rounded-2xl border border-teal-200 dark:border-teal-800 bg-teal-50/60 dark:bg-teal-900/20 p-4">
+              <div className="rounded border border-teal-200 dark:border-teal-800 bg-teal-50/60 dark:bg-teal-900/20 p-4 tech-border cyber-corners">
                 <div className="text-sm text-teal-900 dark:text-teal-200">
                   Storage‑only pricing + optional add‑ons. No feature tiers, no upsell traps.
                 </div>
               </div>
-              <div className="rounded-2xl border border-gray-200 dark:border-gray-800 p-4 text-sm bg-white/70 dark:bg-gray-900/60">
+              <div className="rounded border border-gray-200 dark:border-gray-800 p-4 text-sm bg-white/70 dark:bg-gray-900/60 tech-border cyber-corners">
                 <div className="text-gray-700 dark:text-gray-300">
                   Optional, modular add‑ons can be enabled per tenant (flat or usage‑based) — things like SSO, DRM, HEVC/AV1 ladders, live streaming, and multi‑region storage.
                 </div>
               </div>
             </div>
-            <aside className="rounded-3xl border border-gray-200 dark:border-gray-800 p-6 bg-white/70 dark:bg-gray-900/60">
+            <aside className="rounded-lg border border-gray-200 dark:border-gray-800 p-6 bg-white/70 dark:bg-gray-900/60 tech-border retro-glow cyber-corners">
               <h4 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Simple & predictable pricing</h4>
               <ul className="mt-3 space-y-2 text-sm text-gray-600 dark:text-gray-300">
                 <li>• Storage-only billing ($/GB of storage per month).</li>
@@ -655,7 +839,7 @@ export default function BuffrLandingMock() {
                 <li>• All core features included by default.</li>
                 <li>• No bandwidth or view fees — ever.</li>
               </ul>
-              <div className="mt-5 rounded-2xl bg-teal-50 dark:bg-teal-900/20 p-4 text-sm">
+              <div className="mt-5 rounded bg-teal-50 dark:bg-teal-900/20 p-4 text-sm">
                 <div className="font-medium text-teal-700 dark:text-teal-300">Examples</div>
                 <div className="mt-1 text-gray-700 dark:text-gray-200">2 TB ≈ ${computeMonthlyPrice(2000).toFixed(2)}/mo <br /> 20 TB ≈ ${computeMonthlyPrice(20000).toFixed(2)}/mo</div>
               </div>
@@ -701,7 +885,7 @@ export default function BuffrLandingMock() {
           <div className="flex justify-center">
             <button
               onClick={openWaitlist}
-              className="group inline-flex items-center gap-5 rounded-full text-2xl md:text-3xl font-bold px-10 py-6 border-4 border-teal-600/50 text-teal-700 dark:text-teal-300 bg-teal-50 dark:bg-teal-900/40 transition relative hover:shadow-[0_0_40px_-5px_rgba(20,184,166,0.7)]"
+              className="group inline-flex items-center gap-5 rounded-lg text-2xl md:text-3xl font-bold px-10 py-6 border-4 border-teal-600/50 text-teal-700 dark:text-teal-300 bg-teal-50 dark:bg-teal-900/40 transition relative hover:shadow-[0_0_40px_-5px_rgba(20,184,166,0.7)] tech-border retro-glow cyber-corners"
             >
               <span>Every day I’m</span>
               <span className="relative">
@@ -747,4 +931,34 @@ export default function BuffrLandingMock() {
       <WaitlistModal open={waitlistOpen} onClose={() => setWaitlistOpen(false)} />
     </>
   );
+}
+
+export default function App() {
+  const [currentPage, setCurrentPage] = useState('landing');
+  
+  // Simple router based on URL hash
+  useEffect(() => {
+    const handleHashChange = () => {
+      const hash = window.location.hash.slice(1);
+      setCurrentPage(hash || 'landing');
+    };
+    
+    handleHashChange(); // Set initial page
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
+  
+  if (currentPage === 'logos') {
+    return <LogoShowcase />;
+  }
+  
+  if (currentPage === 'hires') {
+    return <HighResLogos />;
+  }
+  
+  if (currentPage === 'hires-bg') {
+    return <HighResLogosWithBg />;
+  }
+  
+  return <BuffrLandingMock />;
 }
