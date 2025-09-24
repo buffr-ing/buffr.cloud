@@ -1,4 +1,3 @@
-import React from "react";
 import { Play } from "lucide-react";
 
 export default function HighResLogosWithBg() {
@@ -6,7 +5,6 @@ export default function HighResLogosWithBg() {
     <div 
       className="min-h-screen p-8 backdrop-blur bg-white/70 dark:bg-gray-950/60 border-b border-gray-200/60 dark:border-gray-800" 
       style={{ 
-        imageRendering: 'crisp-edges',
         imageRendering: '-webkit-optimize-contrast'
       }}
     >

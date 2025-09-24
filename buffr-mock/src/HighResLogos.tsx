@@ -1,10 +1,8 @@
-import React from "react";
 import { Play } from "lucide-react";
 
 export default function HighResLogos() {
   return (
     <div className="min-h-screen bg-transparent p-8" style={{ 
-      imageRendering: 'crisp-edges',
       imageRendering: '-webkit-optimize-contrast'
     }}>
       <div className="max-w-none space-y-32">

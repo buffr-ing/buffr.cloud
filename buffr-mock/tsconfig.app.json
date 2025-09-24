@@ -23,5 +23,6 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["src"]
+  "include": ["src"],
+  "exclude": ["src/HighResLogos.tsx", "src/HighResLogosWithBg.tsx", "src/LogoShowcase.tsx"]
 }
