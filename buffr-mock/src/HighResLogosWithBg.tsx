@@ -2,12 +2,16 @@ import { Play } from "lucide-react";
 
 export default function HighResLogosWithBg() {
   return (
-    <div 
-      className="min-h-screen p-8 backdrop-blur bg-white/70 dark:bg-gray-950/60 border-b border-gray-200/60 dark:border-gray-800" 
-      style={{ 
-        imageRendering: '-webkit-optimize-contrast'
-      }}
-    >
+    <>
+      {/* Match main page background exactly */}
+      <div className="fixed inset-0 -z-10 bg-gradient-to-b from-white to-slate-50 dark:from-gray-950 dark:to-gray-950" />
+      
+      <div 
+        className="relative min-h-screen bg-gradient-to-b from-white to-slate-50 dark:from-gray-950 dark:to-gray-950 text-gray-900 dark:text-gray-50 p-8" 
+        style={{ 
+          imageRendering: '-webkit-optimize-contrast'
+        }}
+      >
       <div className="max-w-none space-y-32">
         
         {/* Navigation */}
@@ -40,17 +44,17 @@ export default function HighResLogosWithBg() {
                 style={{ 
                   width: '2000px',
                   height: '2000px',
-                  borderWidth: '80px',
+                  borderWidth: '167px',
                   imageRendering: 'crisp-edges'
                 }} 
               />
               <div 
                 className="pointer-events-none absolute bg-gradient-to-r from-transparent via-teal-500 to-transparent rotate-45" 
                 style={{
-                  top: '167px',
-                  left: '167px',
-                  right: '167px',
-                  bottom: '167px',
+                  top: '417px',
+                  left: '417px',
+                  right: '417px',
+                  bottom: '417px',
                   imageRendering: 'crisp-edges'
                 }}
               />
@@ -70,17 +74,17 @@ export default function HighResLogosWithBg() {
                 style={{ 
                   width: '1000px',
                   height: '1000px',
-                  borderWidth: '40px',
+                  borderWidth: '83px',
                   imageRendering: 'crisp-edges'
                 }} 
               />
               <div 
                 className="pointer-events-none absolute bg-gradient-to-r from-transparent via-teal-500 to-transparent rotate-45" 
                 style={{
-                  top: '83px',
-                  left: '83px',
-                  right: '83px',
-                  bottom: '83px',
+                  top: '208px',
+                  left: '208px',
+                  right: '208px',
+                  bottom: '208px',
                   imageRendering: 'crisp-edges'
                 }}
               />
@@ -128,7 +132,7 @@ export default function HighResLogosWithBg() {
           </h2>
           <div className="flex justify-center">
             <div 
-              className="inline-flex items-center rounded border border-teal-600/30 text-teal-700 dark:text-teal-300 bg-teal-50/60 dark:bg-teal-900/20"
+              className="inline-flex items-center rounded border border-teal-600/30 bg-teal-50/60 dark:bg-teal-900/20"
               style={{ 
                 gap: '40px',
                 fontSize: '160px',
@@ -136,7 +140,8 @@ export default function HighResLogosWithBg() {
                 padding: '60px 120px',
                 borderRadius: '40px',
                 borderWidth: '8px',
-                imageRendering: 'crisp-edges'
+                imageRendering: 'crisp-edges',
+                color: '#0f766e'
               }}
             >
               <span className="inline-block">Every day I'm</span>
@@ -174,7 +179,7 @@ export default function HighResLogosWithBg() {
           </h2>
           <div className="flex justify-center">
             <div 
-              className="inline-flex items-center rounded border border-teal-600/30 text-teal-700 dark:text-teal-300 bg-teal-50/60 dark:bg-teal-900/20"
+              className="inline-flex items-center rounded border border-teal-600/30 bg-teal-50/60 dark:bg-teal-900/20"
               style={{ 
                 gap: '30px',
                 fontSize: '120px',
@@ -182,7 +187,8 @@ export default function HighResLogosWithBg() {
                 padding: '40px 80px',
                 borderRadius: '30px',
                 borderWidth: '6px',
-                imageRendering: 'crisp-edges'
+                imageRendering: 'crisp-edges',
+                color: '#0f766e'
               }}
             >
               <span 
@@ -219,6 +225,7 @@ export default function HighResLogosWithBg() {
         </div>
 
       </div>
-    </div>
+      </div>
+    </>
   );
 }

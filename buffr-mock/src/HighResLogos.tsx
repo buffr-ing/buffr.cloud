@@ -37,17 +37,17 @@ export default function HighResLogos() {
                 style={{ 
                   width: '2000px',
                   height: '2000px',
-                  borderWidth: '80px',
+                  borderWidth: '167px',
                   imageRendering: 'crisp-edges'
                 }} 
               />
               <div 
                 className="pointer-events-none absolute bg-gradient-to-r from-transparent via-teal-500 to-transparent rotate-45" 
                 style={{
-                  top: '167px',
-                  left: '167px',
-                  right: '167px',
-                  bottom: '167px',
+                  top: '417px',
+                  left: '417px',
+                  right: '417px',
+                  bottom: '417px',
                   imageRendering: 'crisp-edges'
                 }}
               />
@@ -67,17 +67,17 @@ export default function HighResLogos() {
                 style={{ 
                   width: '1000px',
                   height: '1000px',
-                  borderWidth: '40px',
+                  borderWidth: '83px',
                   imageRendering: 'crisp-edges'
                 }} 
               />
               <div 
                 className="pointer-events-none absolute bg-gradient-to-r from-transparent via-teal-500 to-transparent rotate-45" 
                 style={{
-                  top: '83px',
-                  left: '83px',
-                  right: '83px',
-                  bottom: '83px',
+                  top: '208px',
+                  left: '208px',
+                  right: '208px',
+                  bottom: '208px',
                   imageRendering: 'crisp-edges'
                 }}
               />
