@@ -463,6 +463,7 @@ export default function BuffrLandingMock() {
           @apply inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-[12px] border shadow-sm;
         }
 
+
         /* --- Cursor affordance (show hand cursor on hover) --- */
         button { cursor: default; }
         button:hover { cursor: pointer; }
@@ -491,7 +492,7 @@ export default function BuffrLandingMock() {
                 <div className="h-6 w-6 rounded-full border-2 border-teal-500 transition-transform group-hover:animate-spin group-hover:[animation-duration:.9s] group-hover:ring-2 group-hover:ring-teal-400/40" />
                 <div className="pointer-events-none absolute inset-[5px] bg-gradient-to-r from-transparent via-teal-500 to-transparent rotate-45" />
               </div>
-              <span className="text-xl font-semibold tracking-tight">buffr</span>
+              <span className="text-xl font-black tracking-wide" style={{ fontFamily: 'Orbitron, -apple-system, BlinkMacSystemFont, sans-serif', fontWeight: 900 }}>buffr</span>
 
               {/* Header pill */}
               <a
@@ -732,7 +733,7 @@ export default function BuffrLandingMock() {
                 <div className="h-5 w-5 rounded-full border-2 border-teal-500" />
                 <div className="absolute inset-[4px] bg-gradient-to-r from-transparent via-teal-500 to-transparent rotate-45" />
               </div>
-              <span className="font-semibold">buffr</span>
+              <span className="font-black tracking-wide" style={{ fontFamily: 'Orbitron, -apple-system, BlinkMacSystemFont, sans-serif', fontWeight: 900 }}>buffr</span>
             </div>
             <div className="text-sm text-gray-600 dark:text-gray-300">© {new Date().getFullYear()} Buffr. All rights reserved.</div>
             <div className="text-sm text-gray-600 dark:text-gray-300">
