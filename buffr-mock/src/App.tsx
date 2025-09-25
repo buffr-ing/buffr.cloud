@@ -631,17 +631,17 @@ function BuffrLandingMock() {
         /* --- Responsive zoom for high-res screens --- */
         @media (min-width: 2560px) {
           html {
-            zoom: 1.1;
+            zoom: 1.25;
           }
         }
         @media (min-width: 3440px) {
           html {
-            zoom: 1.2;
+            zoom: 1.45;
           }
         }
         @media (min-width: 3840px) {
           html {
-            zoom: 1.3;
+            zoom: 1.5;
           }
         }
 
