@@ -627,6 +627,16 @@ function BuffrLandingMock() {
           100% { transform: rotate(360deg); }
         }
         
+        @keyframes spin {
+          0% { transform: rotate(-90deg); }
+          100% { transform: rotate(270deg); }
+        }
+        
+        @keyframes dash {
+          0% { stroke-dashoffset: 50.27; }
+          100% { stroke-dashoffset: 12.57; }
+        }
+        
 
         /* --- Responsive zoom for high-res screens --- */
         @media (min-width: 2560px) {
@@ -666,32 +676,74 @@ function BuffrLandingMock() {
 
         {/* Nav (sticky) */}
         <header className="sticky top-0 z-40 backdrop-blur bg-white/70 dark:bg-gray-950/60 border-b border-gray-200/60 dark:border-gray-800">
-          <div className="mx-auto max-w-7xl px-4 py-3 flex items-center justify-between">
+          <div className="mx-auto max-w-7xl px-4 py-3 flex items-center justify-between mt-2">
             <div className="flex items-center gap-3 group">
-              {/* Logo mark */}
-              <div className="relative">
-                <div className="h-6 w-6 rounded-full border-2 border-teal-500 retro-glow" />
-                <div className="pointer-events-none absolute inset-[5px] bg-gradient-to-r from-transparent via-teal-500 to-transparent rotate-45" />
+              {/* Logo mark - Font-based 'b' with integrated play button */}
+              <div className="relative group">
+                <div className="relative w-10 h-10 flex items-center justify-center -mt-2">
+                  {/* Font-rendered lowercase 'b' */}
+                  <div className="relative text-4xl font-black leading-none select-none" 
+                       style={{ 
+                         fontFamily: 'Orbitron, -apple-system, BlinkMacSystemFont, sans-serif', 
+                         fontWeight: 900,
+                         color: '#14b8a6',
+                         textShadow: '0 0 10px rgba(20,184,166,0.3)'
+                       }}>
+                    b
+                  </div>
+                  
+                  {/* Play icon positioned as notification badge at top-right */}
+                  <div className="absolute -top-0 -right-0.5">
+                    <Play className="w-3 h-3 text-emerald-400 fill-current group-hover:animate-pulse" 
+                          style={{
+                            animationDuration: '2s',
+                            filter: 'drop-shadow(0 0 4px rgba(16,185,129,0.6))'
+                          }} />
+                  </div>
+                </div>
               </div>
               <span className="text-xl font-black tracking-wide" style={{ fontFamily: 'Orbitron, -apple-system, BlinkMacSystemFont, sans-serif', fontWeight: 900 }}>buffr</span>
-
-              {/* Header pill */}
-              <a
-                href="#"
-                className="hidden !inline-flex md:!inline-flex items-center gap-1 rounded text-[11px] font-medium px-2.5 py-1 border border-teal-600/30 text-teal-700 dark:text-teal-300 bg-teal-50/60 dark:bg-teal-900/20 hover:bg-teal-50 dark:hover:bg-teal-900/30 transition group/buff chaos-pill"
-                aria-label="Every day I'm buffr.ing"
-                title="Every day I'm buffr.ing"
-              >
-                <span className="inline-block">Every day I'm</span>
-                <span className="inline-block font-semibold relative">
-                  <span className="bg-clip-text text-transparent bg-gradient-to-r from-teal-600 to-emerald-500 relative">
-                    buffr.ing
-                    <span className="absolute bottom-0 left-0 w-full h-[1px] bg-gradient-to-r from-teal-600 to-emerald-500"></span>
-                  </span>
-                  <span className="absolute -right-3 -top-2 text-[10px] select-none sparkle-note"><Play className="w-3 h-3" /></span>
-                </span>
-              </a>
             </div>
+            
+            {/* Header pill - 80's tech terminal style - centered */}
+            <a
+              href="#"
+              className="hidden !inline-flex md:!inline-flex items-center gap-1 text-[11px] font-mono px-2.5 py-1 bg-gray-900 dark:bg-gray-800 text-emerald-400 border border-gray-600 dark:border-gray-500 hover:bg-gray-800 dark:hover:bg-gray-700 transition group/buff chaos-pill relative -mt-2"
+              aria-label="Every day I'm buffr.ing"
+              title="Every day I'm buffr.ing"
+              style={{
+                fontFamily: 'Monaco, "Lucida Console", monospace',
+                boxShadow: '0 0 10px rgba(16,185,129,0.2), inset 0 1px 0 rgba(255,255,255,0.1)'
+              }}
+            >
+              {/* Terminal scanlines */}
+              <div className="absolute inset-0 opacity-20 pointer-events-none"
+                   style={{
+                     backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(16,185,129,0.1) 1px, rgba(16,185,129,0.1) 2px)'
+                   }}>
+              </div>
+              
+              {/* Terminal prompt */}
+              <span className="text-teal-400">&gt;</span>
+              
+              {/* Content */}
+              <div className="relative flex items-center gap-1">
+                <span className="text-gray-300">Every day I'm</span>
+                <span className="relative">
+                  <span className="text-emerald-400 font-semibold underline decoration-emerald-400 decoration-1 underline-offset-2 hover:decoration-2 transition-all">
+                    buffr.ing
+                  </span>
+                  {/* Play icon - hovering over the corner */}
+                  <span className="absolute -right-4 -top-3 text-[10px] select-none z-20">
+                    <Play className="w-3 h-3 text-emerald-400 fill-current" />
+                  </span>
+                </span>
+              </div>
+              
+              {/* 80's tech corner accents */}
+              <div className="absolute top-0 left-0 w-1.5 h-1.5 border-l border-t border-emerald-400/60"></div>
+              <div className="absolute bottom-0 right-0 w-1.5 h-1.5 border-r border-b border-emerald-400/60"></div>
+            </a>
             <nav className="hidden md:flex items-center gap-6 text-sm text-gray-700 dark:text-gray-300">
               <a className="hover:text-gray-900 dark:hover:text-gray-100" href="#features">Features</a>
               <a className="hover:text-gray-900 dark:hover:text-gray-100" href="#pricing">Pricing</a>
@@ -914,8 +966,27 @@ function BuffrLandingMock() {
           <div className="mx-auto max-w-7xl px-4 py-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
             <div className="flex items-center gap-2">
               <div className="relative group">
-                <div className="h-5 w-5 rounded-full border-2 border-teal-500" />
-                <div className="absolute inset-[4px] bg-gradient-to-r from-transparent via-teal-500 to-transparent rotate-45" />
+                <div className="relative w-8 h-8 flex items-center justify-center -mt-2">
+                  {/* Font-rendered lowercase 'b' */}
+                  <div className="relative text-3xl font-black leading-none select-none" 
+                       style={{ 
+                         fontFamily: 'Orbitron, -apple-system, BlinkMacSystemFont, sans-serif', 
+                         fontWeight: 900,
+                         color: '#14b8a6',
+                         textShadow: '0 0 8px rgba(20,184,166,0.3)'
+                       }}>
+                    b
+                  </div>
+                  
+                  {/* Play icon positioned as notification badge at top-right */}
+                  <div className="absolute -top-1 -right-1">
+                    <Play className="w-2.5 h-2.5 text-emerald-400 fill-current group-hover:animate-pulse" 
+                          style={{
+                            animationDuration: '2s',
+                            filter: 'drop-shadow(0 0 3px rgba(16,185,129,0.6))'
+                          }} />
+                  </div>
+                </div>
               </div>
               <span className="font-black tracking-wide" style={{ fontFamily: 'Orbitron, -apple-system, BlinkMacSystemFont, sans-serif', fontWeight: 900 }}>buffr</span>
             </div>
